@@ -11,7 +11,7 @@ The expanded project passes **76 tests** on CPU. All **22 ablation conditions** 
 - Bias control changes only after the explicit training update, consumes usage once, and remains frozen in evaluation. Selection bias does not replace mixture-weight logits.
 - Future-byte objectives use tested offsets and ignore padding. Gradients reach the auxiliary heads and shared trunk. Training-only parameters are reported separately.
 - All five new arms and the hybrid control were rerun after the final attention-state fix. The four compatible MoE additions also completed a combined three-step run; checkpoint reload and independent frozen dev evaluation succeeded. Dense FFNs are a separate control.
-- Python compilation and shell syntax checks completed. Linux and Windows CI definitions include the test suite and two training smoke runs; hosted CI was not executed here.
+- Python compilation and shell syntax checks completed. Linux and Windows CI definitions include the test suite and two training smoke runs; the initial hosted Linux job passed all tests and both smoke runs. The initial Windows job passed 75 tests and failed one UTF-8 notebook-read test; its default-encoding assumption has been corrected. The follow-up hosted run must confirm that fix.
 
 ## Isolated attention-storage measurement
 
@@ -21,8 +21,12 @@ For CPU float32 features shaped B=1, T=128, H=2, d=8, chunk size 16, saved-tenso
 
 Current receipts and logs are in `artifacts/research-smoke/`; test output and XML are in `artifacts/`. No trained weights are packaged. The earlier release's broader smoke checks and report are preserved under `artifacts/cpu-smoke/` and `artifacts/PREVIOUS_REPORT_v0.2.md`; those are historical checks, not reruns of every CLI for v0.3.0.
 
-Environment: Linux x86_64, Python 3.12.14, PyTorch 2.5.1+cpu. CUDA, MPS, BF16, multi-GPU execution, Windows execution and longer multi-seed experiments remain unverified. A GPU leaderboard is intentionally empty. New features are disabled in the default model and have individual presets for controlled comparisons.
+Environment: Linux x86_64, Python 3.12.14, PyTorch 2.5.1+cpu. CUDA, MPS, BF16, multi-GPU execution, full successful Windows execution and longer multi-seed experiments remain unverified. A GPU leaderboard is intentionally empty. New features are disabled in the default model and have individual presets for controlled comparisons.
 
 The default model still has 12,625,740 stored parameters and an architectural active-per-token estimate of 7,907,148. Future heads add training-only parameters when enabled. Neither count is a hardware FLOP measurement.
 
 This is suitable for publication as an educational research project with these limits disclosed. Public speedrun records should follow BENCHMARK_RULES.md and CONTRIBUTING.md and include matched hardware, complete receipts, confirmation evaluation and multiple seeds.
+
+## Colab companion
+
+The Colab notebook code cells were parsed and its campaign helper was exercised locally on CPU. The receipt plotter rendered actual CPU receipts and synthetic fixtures for the optional GPU-memory/target branches; fixtures are not measurements and are not packaged as results. Colab setup and CUDA execution were not run here. Inference now enables BF16 only when CUDA reports BF16 support, retaining FP32 on GPUs without that support.

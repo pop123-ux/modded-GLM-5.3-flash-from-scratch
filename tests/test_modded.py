@@ -112,7 +112,7 @@ def test_unicode_tokenizer_and_specials():
 
 def test_all_nonempty_notebooks_are_valid_json():
     for p in (Path(__file__).resolve().parents[1]/'theory').glob('*.ipynb'):
-        if p.stat().st_size:assert 'cells' in json.loads(p.read_text())
+        if p.stat().st_size:assert 'cells' in json.loads(p.read_text(encoding='utf-8'))
 
 def test_hybrid_baseline_matches_pinned_vuk(cfg):
     upstream=build_baseline(cfg).eval()

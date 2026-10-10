@@ -56,7 +56,13 @@ python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/
 python -m pip install -r requirements.txt
 ```
 
-Install `requirements-dev.txt` for optional plots.
+Install `requirements-dev.txt` for optional plots. Render completed run receipts with `python scripts/plot_benchmarks.py runs/YOUR_CAMPAIGN --output runs/YOUR_CAMPAIGN/figures`.
+
+## Run in Google Colab
+
+[Open the experiment notebook](https://colab.research.google.com/github/pop123-ux/modded-GLM-5.3-flash-from-scratch/blob/main/colab/modded_glm_experiments.ipynb) once the repository is public. While private, download/upload the notebook and use its ZIP-source option.
+
+[COLAB.md](COLAB.md) walks through the isolated Python/CUDA setup, GPU smoke check, baseline pilot, six-arm screen, paired confirmation, plotting and backups. [README_VISUALS.md](README_VISUALS.md) contains a visual plan and five image-generation prompts.
 
 ## Your first run
 

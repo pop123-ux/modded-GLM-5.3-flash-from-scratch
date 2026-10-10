@@ -74,7 +74,7 @@ def generate_group(
     torch.cuda.manual_seed_all(seed)
     model.eval()
     for _ in range(max_new_tokens):
-        with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=rows.is_cuda):
+        with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=rows.is_cuda and torch.cuda.is_bf16_supported()):
             logits, _ = model(rows)
         next_logits = logits[:, -1, :].float() / temperature
         next_logits[:, [tokenizer.pad_id, tokenizer.bos_id, tokenizer.sep_id]] = -torch.inf
