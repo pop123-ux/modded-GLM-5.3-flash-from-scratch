@@ -1,0 +1,46 @@
+{
+  "receipts": [
+    {
+      "source": "../smoke-matrix-v2/hybrid-seed42/training-receipt.json",
+      "status": "complete",
+      "stage": "coding_pretraining",
+      "tokens_seen": 727,
+      "elapsed_seconds": 0.937221028999943,
+      "parameter_counts": {
+        "total": 117700,
+        "active_per_token_estimate": 80836
+      },
+      "last_validation": {
+        "step": 3,
+        "training_seconds": 0.21427737800001978,
+        "val_loss": 5.508403151403513,
+        "completion_val_loss": 5.441065493780655,
+        "val_tokens": 6909,
+        "completion_val_tokens": 1956
+      }
+    },
+    {
+      "source": "../rl-smoke/training-receipt.json",
+      "status": "complete",
+      "stage": "executable_reward_rl",
+      "groups": 2,
+      "elapsed_seconds": 0.171
+    },
+    {
+      "source": "../eval-smoke.json",
+      "status": "complete",
+      "summary": {
+        "pass_at_1": 0.0,
+        "tasks_solved": 0,
+        "tasks_total": 1,
+        "test_accuracy": 0.0,
+        "tests_passed": 0,
+        "tests_total": 3,
+        "token_cap_hits": 1,
+        "valid_programs": 0
+      },
+      "split": "dev"
+    }
+  ],
+  "note": "No cross-run causal or significance claim is inferred."
+}

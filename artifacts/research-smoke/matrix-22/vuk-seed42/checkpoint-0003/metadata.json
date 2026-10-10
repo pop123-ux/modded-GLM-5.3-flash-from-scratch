@@ -1,0 +1,10 @@
+{
+  "data_seed": 42,
+  "implementation": "vuk",
+  "parameter_counts": {
+    "active_per_token_estimate": 80832,
+    "total": 117696
+  },
+  "seed": 42,
+  "step": 3
+}

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modded-glm-from-scratch"
+version = "0.3.0"
+description = "A reproducible small hybrid-attention MoE experiment lab"
+requires-python = ">=3.10,<3.13"
+dependencies = ["torch==2.5.1", "numpy>=1.26,<3"]
+
+[tool.setuptools.packages.find]
+include = ["glm53_flash*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

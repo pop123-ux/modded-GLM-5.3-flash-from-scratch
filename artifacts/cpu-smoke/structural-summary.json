@@ -1,0 +1,134 @@
+{
+  "studies": [
+    {
+      "source": "../diversity-smoke/results.json",
+      "steps": 2,
+      "batch_size": 2,
+      "summaries": [
+        {
+          "condition": "8",
+          "seeds": [
+            42
+          ],
+          "runs": 1,
+          "mean_target_loss": 5.381502980452318,
+          "mean_byte_accuracy": 0.1111111111111111,
+          "mean_exact_accuracy": 0.0,
+          "mean_elapsed_seconds": 0.5209754079999129,
+          "parameter_counts": {
+            "total": 248415,
+            "active_per_token_estimate": 123999
+          }
+        },
+        {
+          "condition": "16",
+          "seeds": [
+            42
+          ],
+          "runs": 1,
+          "mean_target_loss": 5.381502980452318,
+          "mean_byte_accuracy": 0.1111111111111111,
+          "mean_exact_accuracy": 0.0,
+          "mean_elapsed_seconds": 0.5167498859999569,
+          "parameter_counts": {
+            "total": 248415,
+            "active_per_token_estimate": 123999
+          }
+        }
+      ],
+      "paired_differences": [
+        {
+          "left": "8",
+          "right": "16",
+          "paired_seeds": [
+            42
+          ],
+          "mean_byte_accuracy_delta": 0.0,
+          "stdev_delta": null
+        }
+      ]
+    },
+    {
+      "source": "../curriculum-smoke/results.json",
+      "steps": 2,
+      "batch_size": 2,
+      "summaries": [
+        {
+          "condition": "curriculum-8-to-88",
+          "seeds": [
+            42
+          ],
+          "runs": 1,
+          "mean_target_loss": 5.381502980452318,
+          "mean_byte_accuracy": 0.1111111111111111,
+          "mean_exact_accuracy": 0.0,
+          "mean_elapsed_seconds": 0.3207154959999343,
+          "parameter_counts": {
+            "total": 248415,
+            "active_per_token_estimate": 123999
+          }
+        },
+        {
+          "condition": "diverse-interleaved",
+          "seeds": [
+            42
+          ],
+          "runs": 1,
+          "mean_target_loss": 5.381502980452318,
+          "mean_byte_accuracy": 0.1111111111111111,
+          "mean_exact_accuracy": 0.0,
+          "mean_elapsed_seconds": 0.32228041999997004,
+          "parameter_counts": {
+            "total": 248415,
+            "active_per_token_estimate": 123999
+          }
+        },
+        {
+          "condition": "diverse-blocked",
+          "seeds": [
+            42
+          ],
+          "runs": 1,
+          "mean_target_loss": 5.381502980452318,
+          "mean_byte_accuracy": 0.1111111111111111,
+          "mean_exact_accuracy": 0.0,
+          "mean_elapsed_seconds": 0.35177380599998287,
+          "parameter_counts": {
+            "total": 248415,
+            "active_per_token_estimate": 123999
+          }
+        }
+      ],
+      "paired_differences": [
+        {
+          "left": "curriculum-8-to-88",
+          "right": "diverse-interleaved",
+          "paired_seeds": [
+            42
+          ],
+          "mean_byte_accuracy_delta": 0.0,
+          "stdev_delta": null
+        },
+        {
+          "left": "curriculum-8-to-88",
+          "right": "diverse-blocked",
+          "paired_seeds": [
+            42
+          ],
+          "mean_byte_accuracy_delta": 0.0,
+          "stdev_delta": null
+        },
+        {
+          "left": "diverse-interleaved",
+          "right": "diverse-blocked",
+          "paired_seeds": [
+            42
+          ],
+          "mean_byte_accuracy_delta": 0.0,
+          "stdev_delta": null
+        }
+      ]
+    }
+  ],
+  "note": "Descriptive results only; no invented historical results or significance claims."
+}

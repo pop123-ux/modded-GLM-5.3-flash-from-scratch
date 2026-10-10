@@ -1,0 +1,10 @@
+{
+  "val_loss": 5.519277301413475,
+  "completion_val_loss": 5.447108450111436,
+  "val_tokens": 1730,
+  "completion_val_tokens": 489,
+  "split": "dev",
+  "loss_scope": "full",
+  "task_sha256": "e0b886f3c642ae4439354799aa4c6e2d666b34f80e61857d904ab5058a1d0eaf",
+  "weights_sha256": "bf99177e8832d7e16b5124e9f23ff4f84ae956347ced8ae3a3a948de98c2e043"
+}

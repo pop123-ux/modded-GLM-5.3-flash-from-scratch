@@ -1,0 +1,381 @@
+{
+  "rows": [
+    {
+      "run": "../smoke-matrix-v2/balanced-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508406455376366,
+      "completion_val_loss": 5.441050749858708,
+      "training_seconds": 0.2121948289999409,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3426.0966840063875
+    },
+    {
+      "run": "../smoke-matrix-v2/cosine-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.522329980030576,
+      "completion_val_loss": 5.455576906418751,
+      "training_seconds": 0.2877974400000767,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 2526.082233392369
+    },
+    {
+      "run": "../smoke-matrix-v2/dropout-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508448611949767,
+      "completion_val_loss": 5.4410946929869235,
+      "training_seconds": 0.27984893400002875,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 2597.830156465507
+    },
+    {
+      "run": "../smoke-matrix-v2/embedding_skip-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508401101880247,
+      "completion_val_loss": 5.441063629337615,
+      "training_seconds": 0.19753712799990808,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3680.320795189137
+    },
+    {
+      "run": "../smoke-matrix-v2/full_sdpa-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508502217584175,
+      "completion_val_loss": 5.441202198800865,
+      "training_seconds": 0.15657531199997266,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 4643.133011928004
+    },
+    {
+      "run": "../smoke-matrix-v2/hybrid-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508403151403513,
+      "completion_val_loss": 5.441065493780655,
+      "training_seconds": 0.21427737800001978,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3392.7986555815187
+    },
+    {
+      "run": "../smoke-matrix-v2/muon-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.474308413109259,
+      "completion_val_loss": 5.4167086127345545,
+      "training_seconds": 0.21739110500016068,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3344.2030666317405
+    },
+    {
+      "run": "../smoke-matrix-v2/qk_norm-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.50790282037017,
+      "completion_val_loss": 5.441141904741221,
+      "training_seconds": 0.21611904500014134,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3363.8867874856865
+    },
+    {
+      "run": "../smoke-matrix-v2/router_z-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508411773535877,
+      "completion_val_loss": 5.4410473018092365,
+      "training_seconds": 0.2093299579997847,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3472.985935442397
+    },
+    {
+      "run": "../smoke-matrix-v2/small_alpha-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.514011177110472,
+      "completion_val_loss": 5.446113984277643,
+      "training_seconds": 0.212833858999943,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3415.8098876560553
+    },
+    {
+      "run": "../smoke-matrix-v2/softcap-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508413293010023,
+      "completion_val_loss": 5.441095239058106,
+      "training_seconds": 0.24062209600003825,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3021.335164497463
+    },
+    {
+      "run": "../smoke-matrix-v2/sparse_sdpa-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508403045393689,
+      "completion_val_loss": 5.441065485979638,
+      "training_seconds": 0.18002552600000854,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 4038.3162107798285
+    },
+    {
+      "run": "../smoke-matrix-v2/standard_residual-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.477939214249529,
+      "completion_val_loss": 5.421722536925645,
+      "training_seconds": 0.17966745900002934,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 4046.3643446968395
+    },
+    {
+      "run": "../smoke-matrix-v2/streams1-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.503626861108472,
+      "completion_val_loss": 5.4374921677790296,
+      "training_seconds": 0.44232101199986573,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 1643.6026783195655
+    },
+    {
+      "run": "../smoke-matrix-v2/streams4-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.508403151403513,
+      "completion_val_loss": 5.441065493780655,
+      "training_seconds": 0.2827144770000132,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 2571.4990180710347
+    },
+    {
+      "run": "../smoke-matrix-v2/user_repaired-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "modded",
+      "final_val_loss": 5.514011689491289,
+      "completion_val_loss": 5.44611409349188,
+      "training_seconds": 0.20571421100009957,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3534.029061315789
+    },
+    {
+      "run": "../smoke-matrix-v2/vuk-seed42",
+      "comparison_group": 0,
+      "seed": 42,
+      "implementation": "vuk",
+      "final_val_loss": 5.508404299843275,
+      "completion_val_loss": 5.441066227076244,
+      "training_seconds": 0.2014158760000555,
+      "target_reached": false,
+      "time_to_target": null,
+      "tokens_per_second": 3609.4473506140084
+    }
+  ],
+  "summaries": [
+    {
+      "comparison_group": 0,
+      "arm": "balanced",
+      "runs": 1,
+      "mean_loss": 5.508406455376366,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.2121948289999409,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "cosine",
+      "runs": 1,
+      "mean_loss": 5.522329980030576,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.2877974400000767,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "dropout",
+      "runs": 1,
+      "mean_loss": 5.508448611949767,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.27984893400002875,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "embedding_skip",
+      "runs": 1,
+      "mean_loss": 5.508401101880247,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.19753712799990808,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "full_sdpa",
+      "runs": 1,
+      "mean_loss": 5.508502217584175,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.15657531199997266,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "hybrid",
+      "runs": 1,
+      "mean_loss": 5.508403151403513,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.21427737800001978,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "muon",
+      "runs": 1,
+      "mean_loss": 5.474308413109259,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.21739110500016068,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "qk_norm",
+      "runs": 1,
+      "mean_loss": 5.50790282037017,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.21611904500014134,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "router_z",
+      "runs": 1,
+      "mean_loss": 5.508411773535877,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.2093299579997847,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "small_alpha",
+      "runs": 1,
+      "mean_loss": 5.514011177110472,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.212833858999943,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "softcap",
+      "runs": 1,
+      "mean_loss": 5.508413293010023,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.24062209600003825,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "sparse_sdpa",
+      "runs": 1,
+      "mean_loss": 5.508403045393689,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.18002552600000854,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "standard_residual",
+      "runs": 1,
+      "mean_loss": 5.477939214249529,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.17966745900002934,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "streams1",
+      "runs": 1,
+      "mean_loss": 5.503626861108472,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.44232101199986573,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "streams4",
+      "runs": 1,
+      "mean_loss": 5.508403151403513,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.2827144770000132,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "user_repaired",
+      "runs": 1,
+      "mean_loss": 5.514011689491289,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.20571421100009957,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    },
+    {
+      "comparison_group": 0,
+      "arm": "vuk",
+      "runs": 1,
+      "mean_loss": 5.508404299843275,
+      "stdev_loss": null,
+      "mean_training_seconds": 0.2014158760000555,
+      "target_successes": 0,
+      "mean_time_to_target": null
+    }
+  ],
+  "note": "Descriptive statistics only; no statistical significance or GPU speedup claim."
+}

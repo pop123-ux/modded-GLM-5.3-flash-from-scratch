@@ -1,0 +1,10 @@
+{
+  "dim": 128,
+  "layers": 12,
+  "heads": 4,
+  "expert_hidden": 512,
+  "experts": 4,
+  "top_k": 2,
+  "streams": 8,
+  "max_sequence_length": 512
+}

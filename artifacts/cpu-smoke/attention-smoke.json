@@ -1,0 +1,63 @@
+{
+  "torch": "2.5.1+cpu",
+  "device": "cpu",
+  "arguments": {
+    "output": "/workspace/scratch/636100689f6c/attention-smoke.json",
+    "lengths": "16,32",
+    "iterations": 2,
+    "warmup": 2,
+    "batch_size": 2,
+    "dim": 32,
+    "device": "cpu"
+  },
+  "results": [
+    {
+      "attention": "linear",
+      "length": 16,
+      "seconds_per_forward_backward": 0.0009541999999669315,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "gather_sparse",
+      "length": 16,
+      "seconds_per_forward_backward": 0.0020981364999670404,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "masked_sdpa",
+      "length": 16,
+      "seconds_per_forward_backward": 0.0010385479999968084,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "full_sdpa",
+      "length": 16,
+      "seconds_per_forward_backward": 0.0007360299999845665,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "linear",
+      "length": 32,
+      "seconds_per_forward_backward": 0.0019440904999896702,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "gather_sparse",
+      "length": 32,
+      "seconds_per_forward_backward": 0.0017367500000204927,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "masked_sdpa",
+      "length": 32,
+      "seconds_per_forward_backward": 0.0009785555000121349,
+      "peak_vram_gib": null
+    },
+    {
+      "attention": "full_sdpa",
+      "length": 32,
+      "seconds_per_forward_backward": 0.0006652664999933222,
+      "peak_vram_gib": null
+    }
+  ]
+}

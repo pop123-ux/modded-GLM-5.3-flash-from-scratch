@@ -90,7 +90,7 @@ FAMILIES = (
         "x", 
         ("Return exp(x)", "Return the exponential function", "Compute e to the power of x"), 
         "\n    import math\n    return math.exp(x)\n", 
-        (((0,), 1.0), ((1.1,), 3.0041660239464334), ((2.08,), 8.004473859664687))
+        (((0,), 1.0), ((1.1,), 3.0041660239464334), ((2.08,), 8.004468914296353))
     ),
     Family(
         "factorial", 
@@ -123,7 +123,7 @@ FAMILIES = (
 )
 FAMILY_BY_NAME = {family.name: family for family in FAMILIES}
 
-"""Appends a random 12-letter suffix to a function base (e.g., increment_ajsdyuwnemqx), ensuring an AI model cannot rely on pre-memorized internet code scripts based on standard function names"""
+"""Appends a random 12-letter suffix to a function base (e.g., increment_ajsdyuwnemqx), testing sensitivity to function naming; solution templates are still shared across splits"""
 def _name(rng: random.Random, prefix: str) -> str:
     suffix = "".join(rng.choice(string.ascii_lowercase) for _ in range(12))
     return f"{prefix}_{suffix}"
@@ -144,6 +144,8 @@ def make_task(family: Family, *, split: str, index: int, seed: int) -> CodingTas
     )
 
 def frozen_tasks(split: str, *, per_family: int = 4) -> list[CodingTask]:
+    if per_family < 1:
+        raise ValueError('per_family must be positive')
     seeds = {'dev': 1701, 'final': 2909, 'rl': 3907, 'confirm': 8123} #  development (used when writing the code or adjusting the prompts); final (oficial benchmark evaluation); reinforcement learning; confirmation splits (verifies so that the model doesnt overfit on dev or final splits)
     if split not in seeds:
         raise ValueError(f"unknown split: {split}")

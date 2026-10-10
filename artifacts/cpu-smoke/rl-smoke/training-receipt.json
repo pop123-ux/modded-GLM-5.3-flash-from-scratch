@@ -1,0 +1,183 @@
+{
+  "algorithm": "RLOO",
+  "checkpoints": [
+    {
+      "group": 0,
+      "path": "../rl-smoke/checkpoint-0000",
+      "weights_sha256": "733e4b2abc9cce77f6344c3b5f7346a44748c1be160731cc17a89b3d0ebae6a1"
+    },
+    {
+      "group": 2,
+      "path": "../rl-smoke/checkpoint-0002",
+      "weights_sha256": "733e4b2abc9cce77f6344c3b5f7346a44748c1be160731cc17a89b3d0ebae6a1"
+    }
+  ],
+  "device": "cpu",
+  "elapsed_seconds": 0.171,
+  "exact_bonus": 0.0,
+  "families": [
+    "increment"
+  ],
+  "group_size": 2,
+  "groups": 2,
+  "groups_detail": [
+    {
+      "advantages": [
+        0.0,
+        0.0
+      ],
+      "exact_rollouts": 0,
+      "family": "increment",
+      "gradient_norm": null,
+      "group": 1,
+      "policy_loss": null,
+      "reward_spread": 0.0,
+      "rewards": [
+        -0.1,
+        -0.1
+      ],
+      "samples": [
+        {
+          "completion": "X\ufffd+,\u0013\ufffd\ufffd",
+          "evaluation": {
+            "message": "invalid character '\ufffd' (U+FFFD) (<unknown>, line 3)",
+            "pass_fraction": 0.0,
+            "passed": false,
+            "status": "invalid",
+            "tests_passed": 0,
+            "tests_total": 3
+          },
+          "hit_token_cap": true,
+          "reward": -0.1,
+          "token_ids": [
+            92,
+            240,
+            47,
+            48,
+            23,
+            246,
+            194,
+            250
+          ],
+          "tokens": 8
+        },
+        {
+          "completion": "3\ufffd\ufffd\u000b\ufffdC\ufffd\ufffd",
+          "evaluation": {
+            "message": "invalid character '\ufffd' (U+FFFD) (<unknown>, line 3)",
+            "pass_fraction": 0.0,
+            "passed": false,
+            "status": "invalid",
+            "tests_passed": 0,
+            "tests_total": 3
+          },
+          "hit_token_cap": true,
+          "reward": -0.1,
+          "token_ids": [
+            55,
+            186,
+            212,
+            15,
+            156,
+            71,
+            173,
+            208
+          ],
+          "tokens": 8
+        }
+      ],
+      "seconds": 0.085,
+      "task_id": "rl-increment-003",
+      "token_cap_hits": 2,
+      "updated": false,
+      "valid_rollouts": 0
+    },
+    {
+      "advantages": [
+        0.0,
+        0.0
+      ],
+      "exact_rollouts": 0,
+      "family": "increment",
+      "gradient_norm": null,
+      "group": 2,
+      "policy_loss": null,
+      "reward_spread": 0.0,
+      "rewards": [
+        -0.1,
+        -0.1
+      ],
+      "samples": [
+        {
+          "completion": "\ufffd/6W\u0012\ufffd\ufffd\ufffd",
+          "evaluation": {
+            "message": "invalid character '\ufffd' (U+FFFD) (<unknown>, line 3)",
+            "pass_fraction": 0.0,
+            "passed": false,
+            "status": "invalid",
+            "tests_passed": 0,
+            "tests_total": 3
+          },
+          "hit_token_cap": true,
+          "reward": -0.1,
+          "token_ids": [
+            148,
+            51,
+            58,
+            91,
+            22,
+            142,
+            258,
+            177
+          ],
+          "tokens": 8
+        },
+        {
+          "completion": "1a\ufffd\u0296\ufffd\u007f\ufffd",
+          "evaluation": {
+            "message": "invalid decimal literal (<unknown>, line 3)",
+            "pass_fraction": 0.0,
+            "passed": false,
+            "status": "invalid",
+            "tests_passed": 0,
+            "tests_total": 3
+          },
+          "hit_token_cap": true,
+          "reward": -0.1,
+          "token_ids": [
+            53,
+            101,
+            225,
+            206,
+            154,
+            229,
+            131,
+            176
+          ],
+          "tokens": 8
+        }
+      ],
+      "seconds": 0.082,
+      "task_id": "rl-increment-000",
+      "token_cap_hits": 2,
+      "updated": false,
+      "valid_rollouts": 0
+    }
+  ],
+  "initial_checkpoint": "../smoke-matrix-v2/hybrid-seed42/checkpoint-0003",
+  "initial_checkpoint_sha256": "733e4b2abc9cce77f6344c3b5f7346a44748c1be160731cc17a89b3d0ebae6a1",
+  "invalid_penalty": -0.1,
+  "learning_rate": 2e-05,
+  "max_new_tokens": 8,
+  "peak_vram_gib": null,
+  "reward_mode": "case-fraction",
+  "schedule_sha256": "bb1ae26b7e3771140da8ba2538ab9e0ef22648960af84a0bc9ce43a078130420",
+  "schema_version": "1.0",
+  "seed": 31415,
+  "stage": "executable_reward_rl",
+  "status": "complete",
+  "tasks_per_family": 4,
+  "temperature": 0.8,
+  "train_scope": "all",
+  "trainable_parameters": 117700
+}

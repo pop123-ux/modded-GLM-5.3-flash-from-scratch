@@ -1,0 +1,13 @@
+{
+  "dim": 32,
+  "expert_hidden": 48,
+  "experts": 4,
+  "heads": 4,
+  "layers": 4,
+  "max_sequence_length": 512,
+  "sparse_stride": 16,
+  "sparse_window": 16,
+  "streams": 4,
+  "top_k": 2,
+  "vocab_size": 260
+}

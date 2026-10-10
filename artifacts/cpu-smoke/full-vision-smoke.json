@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "status": "complete",
+  "experiment": "full_25m_language_model_rgb_digit_integration",
+  "claim_tested": "A miniature GLM-like vision encoder can learn a held-out RGB digit task while its tokens pass through the full 12-layer 25.7M language model.",
+  "initialization": {
+    "source": "random",
+    "checkpoint": null
+  },
+  "environment": {
+    "device": "cpu",
+    "torch_version": "2.5.1+cpu",
+    "python_version": "3.12.14",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39"
+  },
+  "model": {
+    "language_model_parameters": 25731180,
+    "total_multimodal_parameters": 25875588,
+    "trainable_parameters": 2335137,
+    "language_layers_executed": 12,
+    "visual_tokens": 16,
+    "trained_components": [
+      "vision_encoder",
+      "language_model.layers[-1]",
+      "language_model.final_norm",
+      "tied_embedding_output"
+    ],
+    "frozen_components": "language_model.layers[0:11]"
+  },
+  "data": {
+    "source": "procedurally generated RGB seven-segment digits",
+    "downloaded": false,
+    "training_examples_seen": 1,
+    "training_seed_schedule": "seed + step",
+    "held_out_examples": 10,
+    "held_out_seed": 100073,
+    "held_out_reused_before_after": true
+  },
+  "optimization": {
+    "requested_steps": 1,
+    "completed_steps": 1,
+    "batch_size": 1,
+    "learning_rate": 0.001,
+    "max_seconds": 540.0,
+    "stop_reason": "step_cap",
+    "wall_time_seconds": 0.138,
+    "loss_trace": [
+      {
+        "step": 1,
+        "language_loss": 5.87615,
+        "gradient_norm": 25.162457
+      }
+    ]
+  },
+  "before": {
+    "accuracy": 0.0,
+    "correct": 0,
+    "examples": 10,
+    "cross_entropy": 5.729339122772217,
+    "predictions_first_20": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+    ],
+    "targets_first_20": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ]
+  },
+  "after": {
+    "accuracy": 0.0,
+    "correct": 0,
+    "examples": 10,
+    "cross_entropy": 5.440262317657471,
+    "predictions_first_20": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+    ],
+    "targets_first_20": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ]
+  },
+  "learned_at_all": false,
+  "checkpoint_saved": false,
+  "limitations": [
+    "One synthetic task and one seed; this is an integration pilot, not general vision evidence.",
+    "The first eleven language-model layers were frozen but still executed in every forward and backward pass.",
+    "Only a small number of procedural training images were seen.",
+    "The held-out set changes image rendering randomness, not the ten semantic digit classes.",
+    "No architecture comparison or statistical significance claim is made."
+  ]
+}

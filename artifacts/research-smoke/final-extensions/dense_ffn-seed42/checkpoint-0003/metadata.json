@@ -1,0 +1,12 @@
+{
+  "data_seed": 42,
+  "implementation": "modded",
+  "parameter_counts": {
+    "active_per_token_estimate": 80324,
+    "inference_parameters": 80324,
+    "total": 80324,
+    "training_only_parameters": 0
+  },
+  "seed": 42,
+  "step": 3
+}

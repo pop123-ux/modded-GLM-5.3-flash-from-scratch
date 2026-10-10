@@ -1,0 +1,99 @@
+{
+  "by_family": {
+    "increment": {
+      "exact_rollouts": 0,
+      "rollouts": 2,
+      "tasks": 1,
+      "tasks_solved_at_k": 0,
+      "valid_rollouts": 0
+    }
+  },
+  "checkpoint": "../smoke-matrix-v2/hybrid-seed42/checkpoint-0003",
+  "checkpoint_sha256": "733e4b2abc9cce77f6344c3b5f7346a44748c1be160731cc17a89b3d0ebae6a1",
+  "elapsed_seconds": 0.087,
+  "episodes": [
+    {
+      "family": "increment",
+      "prompt": "# Complete this Python function.\n# Return x plus one.\ndef increment_axkyimagpvbf(x):",
+      "reference_completion": "\n    return x + 1\n",
+      "samples": [
+        {
+          "completion": "\" eF\ufffd\ufffdX\ufffd",
+          "evaluation": {
+            "message": "unterminated string literal (detected at line 3) (<unknown>, line 3)",
+            "pass_fraction": 0.0,
+            "passed": false,
+            "status": "invalid",
+            "tests_passed": 0,
+            "tests_total": 3
+          },
+          "hit_token_cap": true,
+          "sample": 0,
+          "token_ids": [
+            38,
+            36,
+            105,
+            74,
+            158,
+            242,
+            92,
+            257
+          ],
+          "tokens": 8
+        },
+        {
+          "completion": "Y\u0018\ufffd\ufffd\ufffd\ufffdG}",
+          "evaluation": {
+            "message": "invalid non-printable character U+0018 (<unknown>, line 3)",
+            "pass_fraction": 0.0,
+            "passed": false,
+            "status": "invalid",
+            "tests_passed": 0,
+            "tests_total": 3
+          },
+          "hit_token_cap": true,
+          "sample": 1,
+          "token_ids": [
+            93,
+            28,
+            255,
+            255,
+            216,
+            247,
+            75,
+            129
+          ],
+          "tokens": 8
+        }
+      ],
+      "solved_at_k": false,
+      "task_id": "dev-increment-000"
+    }
+  ],
+  "inference": {
+    "families": [
+      "increment"
+    ],
+    "max_new_tokens": 8,
+    "samples_per_task": 2,
+    "seed": 8675309,
+    "temperature": 0.35
+  },
+  "peak_vram_gib": null,
+  "schema_version": "1.0",
+  "split": "dev",
+  "status": "complete",
+  "summary": {
+    "exact_rollout_rate": 0.0,
+    "exact_rollouts": 0,
+    "pass_at_k": 0.0,
+    "rollouts_total": 2,
+    "tasks_solved_at_k": 0,
+    "tasks_total": 1,
+    "test_accuracy": 0.0,
+    "tests_passed": 0,
+    "tests_total": 6,
+    "token_cap_hits": 2,
+    "valid_rollouts": 0
+  }
+}

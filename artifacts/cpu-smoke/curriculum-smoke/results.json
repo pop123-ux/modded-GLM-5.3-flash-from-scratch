@@ -1,0 +1,466 @@
+{
+  "schema_version": "1.0",
+  "status": "complete",
+  "steps": 2,
+  "batch_size": 2,
+  "learning_rate": 0.0008,
+  "conditions": [
+    "curriculum-8-to-88",
+    "diverse-interleaved",
+    "diverse-blocked"
+  ],
+  "seeds": [
+    42
+  ],
+  "device": "cpu",
+  "elapsed_seconds": 2.3757082849999733,
+  "held_out_structures": [
+    [
+      "neg",
+      "neg",
+      "add"
+    ],
+    [
+      "neg",
+      "add",
+      "abs"
+    ],
+    [
+      "sub",
+      "neg",
+      "add"
+    ],
+    [
+      "sub",
+      "sub",
+      "mul"
+    ],
+    [
+      "abs",
+      "sub",
+      "neg"
+    ],
+    [
+      "abs",
+      "sub",
+      "sub"
+    ],
+    [
+      "sub",
+      "add",
+      "neg"
+    ],
+    [
+      "abs",
+      "add",
+      "neg"
+    ],
+    [
+      "add",
+      "abs",
+      "abs"
+    ],
+    [
+      "neg",
+      "add",
+      "add"
+    ],
+    [
+      "sub",
+      "add",
+      "mul"
+    ],
+    [
+      "abs",
+      "mul",
+      "add"
+    ],
+    [
+      "neg",
+      "neg",
+      "abs"
+    ],
+    [
+      "add",
+      "abs",
+      "mul"
+    ],
+    [
+      "neg",
+      "mul",
+      "add"
+    ],
+    [
+      "abs",
+      "neg",
+      "add"
+    ],
+    [
+      "add",
+      "abs",
+      "neg"
+    ],
+    [
+      "abs",
+      "abs",
+      "mul"
+    ],
+    [
+      "neg",
+      "sub",
+      "add"
+    ],
+    [
+      "sub",
+      "mul",
+      "mul"
+    ],
+    [
+      "abs",
+      "neg",
+      "sub"
+    ],
+    [
+      "mul",
+      "neg",
+      "neg"
+    ],
+    [
+      "abs",
+      "neg",
+      "mul"
+    ],
+    [
+      "add",
+      "sub",
+      "neg"
+    ],
+    [
+      "add",
+      "abs",
+      "sub"
+    ],
+    [
+      "sub",
+      "sub",
+      "neg"
+    ],
+    [
+      "add",
+      "mul",
+      "abs"
+    ],
+    [
+      "neg",
+      "add",
+      "neg"
+    ],
+    [
+      "mul",
+      "mul",
+      "abs"
+    ],
+    [
+      "mul",
+      "mul",
+      "sub"
+    ],
+    [
+      "mul",
+      "add",
+      "add"
+    ],
+    [
+      "mul",
+      "neg",
+      "add"
+    ]
+  ],
+  "runs": [
+    {
+      "condition": "curriculum-8-to-88",
+      "seed": 42,
+      "steps": 2,
+      "batch_size": 2,
+      "tokens_seen": 395,
+      "elapsed_seconds": 0.3207154959999343,
+      "parameter_counts": {
+        "total": 248415,
+        "active_per_token_estimate": 123999
+      },
+      "before": {
+        "target_loss": 5.442686208904299,
+        "target_perplexity": 231.06203145365865,
+        "target_byte_accuracy": 0.1111111111111111,
+        "target_exact_accuracy": 0.0,
+        "examples": [
+          {
+            "structure": [
+              "neg",
+              "neg",
+              "add"
+            ],
+            "target": "((-(-x)) + 4)\n",
+            "teacher_forced_argmax": " ((-(-x)) + 4)\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "neg",
+              "add",
+              "abs"
+            ],
+            "target": "abs(((-x) + 5))\n",
+            "teacher_forced_argmax": " abs(((-x) + 5))\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "sub",
+              "neg",
+              "add"
+            ],
+            "target": "((-(x - 2)) + 2)\n",
+            "teacher_forced_argmax": " ((-(x - 2)) + 2)\n",
+            "exact": false
+          }
+        ]
+      },
+      "after": {
+        "target_loss": 5.381502980452318,
+        "target_perplexity": 217.3487009067396,
+        "target_byte_accuracy": 0.1111111111111111,
+        "target_exact_accuracy": 0.0,
+        "examples": [
+          {
+            "structure": [
+              "neg",
+              "neg",
+              "add"
+            ],
+            "target": "((-(-x)) + 4)\n",
+            "teacher_forced_argmax": " ((-(-x)) + 4)\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "neg",
+              "add",
+              "abs"
+            ],
+            "target": "abs(((-x) + 5))\n",
+            "teacher_forced_argmax": " abs(((-x) + 5))\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "sub",
+              "neg",
+              "add"
+            ],
+            "target": "((-(x - 2)) + 2)\n",
+            "teacher_forced_argmax": " ((-(x - 2)) + 2)\n",
+            "exact": false
+          }
+        ]
+      },
+      "training_curve": [
+        {
+          "step": 1,
+          "training_loss": 5.528031826019287,
+          "tokens_seen": 192
+        }
+      ]
+    },
+    {
+      "condition": "diverse-interleaved",
+      "seed": 42,
+      "steps": 2,
+      "batch_size": 2,
+      "tokens_seen": 395,
+      "elapsed_seconds": 0.32228041999997004,
+      "parameter_counts": {
+        "total": 248415,
+        "active_per_token_estimate": 123999
+      },
+      "before": {
+        "target_loss": 5.442686208904299,
+        "target_perplexity": 231.06203145365865,
+        "target_byte_accuracy": 0.1111111111111111,
+        "target_exact_accuracy": 0.0,
+        "examples": [
+          {
+            "structure": [
+              "neg",
+              "neg",
+              "add"
+            ],
+            "target": "((-(-x)) + 4)\n",
+            "teacher_forced_argmax": " ((-(-x)) + 4)\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "neg",
+              "add",
+              "abs"
+            ],
+            "target": "abs(((-x) + 5))\n",
+            "teacher_forced_argmax": " abs(((-x) + 5))\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "sub",
+              "neg",
+              "add"
+            ],
+            "target": "((-(x - 2)) + 2)\n",
+            "teacher_forced_argmax": " ((-(x - 2)) + 2)\n",
+            "exact": false
+          }
+        ]
+      },
+      "after": {
+        "target_loss": 5.381502980452318,
+        "target_perplexity": 217.3487009067396,
+        "target_byte_accuracy": 0.1111111111111111,
+        "target_exact_accuracy": 0.0,
+        "examples": [
+          {
+            "structure": [
+              "neg",
+              "neg",
+              "add"
+            ],
+            "target": "((-(-x)) + 4)\n",
+            "teacher_forced_argmax": " ((-(-x)) + 4)\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "neg",
+              "add",
+              "abs"
+            ],
+            "target": "abs(((-x) + 5))\n",
+            "teacher_forced_argmax": " abs(((-x) + 5))\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "sub",
+              "neg",
+              "add"
+            ],
+            "target": "((-(x - 2)) + 2)\n",
+            "teacher_forced_argmax": " ((-(x - 2)) + 2)\n",
+            "exact": false
+          }
+        ]
+      },
+      "training_curve": [
+        {
+          "step": 1,
+          "training_loss": 5.528031826019287,
+          "tokens_seen": 192
+        }
+      ]
+    },
+    {
+      "condition": "diverse-blocked",
+      "seed": 42,
+      "steps": 2,
+      "batch_size": 2,
+      "tokens_seen": 395,
+      "elapsed_seconds": 0.35177380599998287,
+      "parameter_counts": {
+        "total": 248415,
+        "active_per_token_estimate": 123999
+      },
+      "before": {
+        "target_loss": 5.442686208904299,
+        "target_perplexity": 231.06203145365865,
+        "target_byte_accuracy": 0.1111111111111111,
+        "target_exact_accuracy": 0.0,
+        "examples": [
+          {
+            "structure": [
+              "neg",
+              "neg",
+              "add"
+            ],
+            "target": "((-(-x)) + 4)\n",
+            "teacher_forced_argmax": " ((-(-x)) + 4)\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "neg",
+              "add",
+              "abs"
+            ],
+            "target": "abs(((-x) + 5))\n",
+            "teacher_forced_argmax": " abs(((-x) + 5))\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "sub",
+              "neg",
+              "add"
+            ],
+            "target": "((-(x - 2)) + 2)\n",
+            "teacher_forced_argmax": " ((-(x - 2)) + 2)\n",
+            "exact": false
+          }
+        ]
+      },
+      "after": {
+        "target_loss": 5.381502980452318,
+        "target_perplexity": 217.3487009067396,
+        "target_byte_accuracy": 0.1111111111111111,
+        "target_exact_accuracy": 0.0,
+        "examples": [
+          {
+            "structure": [
+              "neg",
+              "neg",
+              "add"
+            ],
+            "target": "((-(-x)) + 4)\n",
+            "teacher_forced_argmax": " ((-(-x)) + 4)\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "neg",
+              "add",
+              "abs"
+            ],
+            "target": "abs(((-x) + 5))\n",
+            "teacher_forced_argmax": " abs(((-x) + 5))\n",
+            "exact": false
+          },
+          {
+            "structure": [
+              "sub",
+              "neg",
+              "add"
+            ],
+            "target": "((-(x - 2)) + 2)\n",
+            "teacher_forced_argmax": " ((-(x - 2)) + 2)\n",
+            "exact": false
+          }
+        ]
+      },
+      "training_curve": [
+        {
+          "step": 1,
+          "training_loss": 5.528031826019287,
+          "tokens_seen": 192
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+{
+  "schema_version": "2.0",
+  "status": "complete",
+  "stage": "coding_pretraining",
+  "config": {
+    "vocab_size": 260,
+    "dim": 32,
+    "layers": 4,
+    "heads": 4,
+    "expert_hidden": 48,
+    "experts": 4,
+    "top_k": 2,
+    "streams": 4,
+    "sparse_window": 16,
+    "sparse_stride": 16,
+    "max_sequence_length": 512,
+    "trace_shapes": false,
+    "diagnostics": false,
+    "residual_alpha": 1.0,
+    "residual_dropout": 0.0,
+    "attention_mode": "hybrid",
+    "sparse_backend": "gather",
+    "sparse_every": 4,
+    "residual_mode": "streams",
+    "qk_norm": true,
+    "embedding_skip": false,
+    "logit_softcap": 0.0,
+    "padding_aware_routing": false,
+    "linear_chunk_size": 0,
+    "linear_checkpoint_chunks": false,
+    "ffn_mode": "moe",
+    "dense_hidden": 0,
+    "router_bias_rate": 0.0,
+    "router_bias_limit": 2.0,
+    "future_heads": 0
+  },
+  "parameter_counts": {
+    "total": 117764,
+    "active_per_token_estimate": 80900,
+    "training_only_parameters": 0,
+    "inference_parameters": 117764
+  },
+  "implementation": "modded",
+  "arguments": {
+    "output": "/workspace/scratch/636100689f6c/research-matrix-smoke/qk_norm-seed42",
+    "config": "/workspace/scratch/636100689f6c/research-matrix-smoke/qk_norm.json",
+    "implementation": "modded",
+    "steps": 3,
+    "checkpoints": "",
+    "batch_size": 2,
+    "sequence_length": 320,
+    "learning_rate": 0.0003,
+    "muon_lr": 0.02,
+    "optimizer": "adamw",
+    "weight_decay": 0.1,
+    "balance_weight": 0.0,
+    "z_weight": 0.0,
+    "future_weight": 0.1,
+    "trim_padding": false,
+    "loss_scope": "full",
+    "schedule": "constant",
+    "warmup_steps": 0,
+    "seed": 42,
+    "data_seed": 42,
+    "families": "",
+    "dim": null,
+    "layers": null,
+    "eval_every": 20,
+    "eval_per_family": 4,
+    "target_loss": null,
+    "device": "cpu",
+    "amp": false,
+    "threads": 1
+  },
+  "seed": 42,
+  "steps": 3,
+  "batch_size": 2,
+  "sequence_length": 320,
+  "learning_rate": 0.0003,
+  "tokens_seen": 727,
+  "training_seconds": 0.218659912000021,
+  "elapsed_seconds": 0.8235224430000017,
+  "device": "cpu",
+  "torch": "2.5.1+cpu",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "device_name": "x86_64",
+  "peak_vram_gib": null,
+  "validation_sha256": "076df655d9818b5bda08683134602503ec09396bb7ccfe70e464e5a91736ec6c",
+  "source_sha256": {
+    "glm53_flash/__init__.py": "01cf71b5faef7e88fae77068456d5c0d487feea63febb2e4b4a08ca4089a730f",
+    "glm53_flash/baseline.py": "a43974d1d142d2d0a7993fe6f284e95ee855e8c99ef6284004c81e126949727c",
+    "glm53_flash/data.py": "ce9b604dce8a99e0ce6041aebd25c73b29a72d3603a81b83b1f4cfec606aee88",
+    "glm53_flash/evaluator.py": "adff70e1974c0c6b6812b19aa869ef31256ce1823d4d11a2bfe1bb4e1a00a20c",
+    "glm53_flash/linear.py": "374891ba61288ee16fa3ff43dcbdc6f63aa9a8c8d21dbf87f23090a11eb50ba0",
+    "glm53_flash/model.py": "50efaa0cf528e9ea9e9dc70800d3024fcd9c39e4b726e124b649c57fc1fc2b5d",
+    "glm53_flash/objectives.py": "7fea66fcdd966d37bf3c1c514eb9f4f0d2a117b877e9c75fd294d482e5e4eecd",
+    "glm53_flash/optim.py": "27eb0279d45231147ad72674fd0e590d1f42a783078619988b98aa0abc339121",
+    "glm53_flash/runtime.py": "adfa952613b5eeff01febe9910a620eb01656fd7f8145878eb21a51a3b7e3ca7",
+    "glm53_flash/tasks.py": "65d4103b22242fdd1d8423972130933e6ccfb0e85b6132fb5fd0907e235efbd8",
+    "glm53_flash/tokenizer.py": "41acb322ebfc8d54c5dee17cd59d9d47af2ed5c34ccf0d4a88c6928c6ded1bae",
+    "glm53_flash/vision.py": "9b8d99a1f42ac8dc56de39d17ad8bc37d6d865c51bbef3f917b01e416c1a8c77",
+    "scripts/analyze_benchmarks.py": "7dbf35023ce4adc794dd991775a7dea11dd57a36b3709b50dba126442eb9b57a",
+    "scripts/analyze_results.py": "e4ae9085a4996009fa3fa24cc22c9400c14d19c28ea4e86f05ff9f82e140197a",
+    "scripts/analyze_rl_group_confirmation.py": "d8aa229158ab81f80a80164a59ea5bd85e00643f001c57e6d4abb1bac159daf9",
+    "scripts/analyze_rl_variants.py": "100af7bb95e2e7847873804e40b79bcd83de3da1dcd015f06bc54becc8d6b3a2",
+    "scripts/evaluate.py": "f14a56d15cb65e24a903a0a336d43a24212cf357ed2fc06b7dd687f00cfd72b0",
+    "scripts/evaluate_passk.py": "63536775f5bbcc0d3fcf403fb1a6352afbdca6adaaf0e6e15415c54f224e3c9c",
+    "scripts/generate.py": "6bdc32f45aa471d816a3bdf9b7f86b123b40599aae581ed4eea74b75f4da67a3",
+    "scripts/system_receipt.py": "02297656466b50c41260e531d03d1b16bbbfc85bda5477dbfb6f18087432b78d",
+    "scripts/train_pretrain.py": "8f40475031dfe9464fdf36b6ad03112689fa5860fdf26a1afec0a458afb155aa",
+    "scripts/train_rl.py": "381ade5ae0377708121a3ca12842cf9c588bb9703f999b27faac0b89eb6ada0a",
+    "scripts/train_vision.py": "f441d3959e7c145b69b37d69aacaf882d6166b677c5c35f078ea5cc569eaa986",
+    "scripts/validate_loss.py": "550f4296c5c8e3d60e260fcf1f2a4805149ac273afcc60427dc3dcb47a22ba5e",
+    "baselines/upstream/glm53_flash/__init__.py": "a383fc48ef3f47e36018ff6d9623960883a6606dca49e03230f4bf756dc85ef6",
+    "baselines/upstream/glm53_flash/evaluator.py": "4b2a6262d7f5a973c4e2e6db5646cfeab3ae7f207d04f5b65d990a6a25202674",
+    "baselines/upstream/glm53_flash/model.py": "897ea5aca999319cf4379cade6c4d5fc98ea1c99320021de1d894c21d9db662d",
+    "baselines/upstream/glm53_flash/runtime.py": "13a7ce595b276871732e6a776a17494a57ef4f1e0f304b94d6e9f12068a47992",
+    "baselines/upstream/glm53_flash/tasks.py": "e0962d03e5b2c21f3d75198804f1e8b5e85a5297f94066af2367fe7de750e313",
+    "baselines/upstream/glm53_flash/tokenizer.py": "bf5a48066a1bb40efb3dc9ebfe8427446428f1bbd733df9951abbaf28287f85c",
+    "baselines/upstream/glm53_flash/vision.py": "2065dc9f86da62a32f1c587fff30009f629f0b1c702095e732d8afc28e8725ba"
+  },
+  "input_positions_seen": 1920,
+  "nonpad_input_positions_seen": 733,
+  "target_loss": null,
+  "first_target_hit": null,
+  "validation_curve": [
+    {
+      "step": 0,
+      "training_seconds": 0.0,
+      "val_loss": 5.531266148829878,
+      "completion_val_loss": 5.465146866312788,
+      "val_tokens": 6909,
+      "completion_val_tokens": 1956
+    },
+    {
+      "step": 3,
+      "training_seconds": 0.218659912000021,
+      "val_loss": 5.50790282037017,
+      "completion_val_loss": 5.441141904741221,
+      "val_tokens": 6909,
+      "completion_val_tokens": 1956
+    }
+  ],
+  "checkpoints": [
+    {
+      "step": 0,
+      "path": "/workspace/scratch/636100689f6c/research-matrix-smoke/qk_norm-seed42/checkpoint-0000",
+      "weights_sha256": "43d72edb3adcca67a72fc7f9a8a64307f1c3200182e1583f714741e7c34d2a63"
+    },
+    {
+      "step": 3,
+      "path": "/workspace/scratch/636100689f6c/research-matrix-smoke/qk_norm-seed42/checkpoint-0003",
+      "weights_sha256": "513b2d20e0af3fbbede286631dc2cbb99cb1840e010263e21241561675766038"
+    }
+  ],
+  "training_curve": [
+    {
+      "step": 1,
+      "loss": 5.555541038513184,
+      "balance_loss": 1.0211060047149658,
+      "z_loss": 1.9614366292953491,
+      "future_loss": 0.0,
+      "gradient_norm": 0.7856885194778442,
+      "tokens": 262,
+      "seconds": 0.0738413839999339,
+      "training_seconds": 0.0738413839999339,
+      "lr_factor": 1.0,
+      "expert_usage": [
+        [
+          0.43671876192092896,
+          0.125,
+          0.36328125,
+          0.07500000298023224
+        ],
+        [
+          0.234375,
+          0.2890625,
+          0.10703124850988388,
+          0.3695312440395355
+        ],
+        [
+          0.07265625149011612,
+          0.13906249403953552,
+          0.38359373807907104,
+          0.4046874940395355
+        ],
+        [
+          0.4000000059604645,
+          0.11328125,
+          0.39765626192092896,
+          0.08906249701976776
+        ]
+      ],
+      "input_positions": 640,
+      "nonpad_input_positions": 264,
+      "effective_sequence_length": 320
+    },
+    {
+      "step": 2,
+      "loss": 5.529088497161865,
+      "balance_loss": 1.0269839763641357,
+      "z_loss": 1.9656777381896973,
+      "future_loss": 0.0,
+      "gradient_norm": 0.9765401482582092,
+      "tokens": 219,
+      "seconds": 0.0736701990003894,
+      "training_seconds": 0.1475115830003233,
+      "lr_factor": 1.0,
+      "expert_usage": [
+        [
+          0.4546875059604645,
+          0.1015625,
+          0.38671875,
+          0.05703125149011612
+        ],
+        [
+          0.20234374701976776,
+          0.32890623807907104,
+          0.07109375298023224,
+          0.39765626192092896
+        ],
+        [
+          0.06015624850988388,
+          0.11562500149011612,
+          0.3929687440395355,
+          0.4312500059604645
+        ],
+        [
+          0.4242187440395355,
+          0.08046875149011612,
+          0.4234375059604645,
+          0.07187499850988388
+        ]
+      ],
+      "input_positions": 640,
+      "nonpad_input_positions": 221,
+      "effective_sequence_length": 320
+    },
+    {
+      "step": 3,
+      "loss": 5.5162458419799805,
+      "balance_loss": 1.0233796834945679,
+      "z_loss": 1.9634534120559692,
+      "future_loss": 0.0,
+      "gradient_norm": 0.9361243844032288,
+      "tokens": 246,
+      "seconds": 0.0711483289996977,
+      "training_seconds": 0.218659912000021,
+      "lr_factor": 1.0,
+      "expert_usage": [
+        [
+          0.44921875,
+          0.12578125298023224,
+          0.36250001192092896,
+          0.0625
+        ],
+        [
+          0.23593750596046448,
+          0.3031249940395355,
+          0.0859375,
+          0.375
+        ],
+        [
+          0.07109375298023224,
+          0.13671875,
+          0.38203126192092896,
+          0.41015625
+        ],
+        [
+          0.41093748807907104,
+          0.07890625298023224,
+          0.4312500059604645,
+          0.07890625298023224
+        ]
+      ],
+      "input_positions": 640,
+      "nonpad_input_positions": 248,
+      "effective_sequence_length": 320
+    }
+  ],
+  "timing_policy": "Synchronized training includes data construction, forward, backward, optimizer; excludes validation, logs and saves. No untimed optimization steps."
+}

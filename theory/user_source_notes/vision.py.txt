@@ -1,0 +1,263 @@
+"""Tiny, readable GLM-Style image path for the byte language model.
+
+The production topology is preserved at teaching scale: RGB path embedding,
+non-causal vision transformer blocks, 2 x 2 spatial downsampling, a gated
+multimodal projector, and placeholder replacement inside a token sequence.
+"""
+from dataclasses import dataclass
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from .model import ModdedGLM53FlashFromScratch, RMSNorm
+
+@dataclass(frozen=True)
+class MiniVisionConfig:
+    # --- Input Specification ---
+    image_size: int = 32 # Spatial dimensions of the input square image (32x32 pixels, matching CIFAR-10 scale)
+    patch_size: int = 4 # Dimensions of the small square pixel patches (4x4) the image is carved into
+    in_channels: int = 3 # Number of input color channels (RGB -> 3)
+    
+    # --- Vision Transformer (ViT) Core Back-bone ---
+    hidden_size: int = 32
+    depth: int = 2
+    heads: int = 4
+    intermediate_size: int = 64
+    
+    # --- Downsampling & Projection Layers ---
+    spatial_merge_size: int = 2
+    projection_intermediate_size: int =64
+    rms_norm_eps: float = 1e-5
+    
+    @property
+    def patch_grid_size(self) -> int:
+        """Calculates the number of patches along a single spatial dimension (axis)."""
+        return self.image_size // self.patch_size
+    
+    @property
+    def merged_grid_size(self) -> int:
+        """Calculates the number of downsampled tokens along a single spatial dimension (axis)."""
+        return self.patch_grid_size // self.spatial_merge_size
+    
+    @property
+    def visual_token_count(self) -> int:
+        """Calculates the ultimate number of visual tokens that will be injected into the language sequence."""
+        return self.merged_grid_size**2
+    
+    def validate(self) -> None:
+        """Validates that all mathematical shape operations align properly before building tensors."""
+        #if self.in_channels != 3: -> can add mono-channel transforms for this
+        #    raise ValueError("the miniature vision path requires RGB input")
+        if self.image_size % self.patch_size:
+            raise ValueError("image_size must be divisible by path_size")
+        if self.patch_grid_size % self.spatial_merge_size:
+            raise ValueError("patch grid must be divisible by spatial_merge_size")
+        if self.hidden_size % self.heads:
+            raise ValueError("vision hidden_size must be divisible by heads")
+         # Assures there is at least 1 functional Transformer block to process the embedded features.
+        if self.depth < 1:
+            raise ValueError("vision depth must be >= 1")
+        
+@dataclass(frozen=True)
+class ImageTokenIds:
+    """Special IDs appended after the 260-token byte vocab."""
+    
+    start: int = 260
+    placeholder: int = 261
+    end: int = 262
+    bos: int = 1
+    
+    @property
+    def required_vocab_size(self) -> int:
+        # The total dimension the embedding matrix has to have
+        return max(self.start, self.placeholder, self.end) + 1
+class RGBPatchEmbedding(nn.Module):
+    """Embed non-overlapping RGB patches and add a tiny learned 2D position table."""
+    
+    def __init__(self, config: MiniVisionConfig):
+        super().__init__()
+        config.validate()
+        self.config = config
+        
+        # Defines a 2D convolutional layer used to split the input image into a grid of non-overlapping patches
+        # and project each patch into a vector of size 'hidden_size'.
+        self.proj = nn.Conv2d(
+            config.in_channels,
+            config.hidden_size,
+            kernel_size=config.patch_size, # Width and Height of each image patch
+            stride=config.patch_size, # Stride equals patch size so that the patches do not overlap during convolution.
+            bias=True, # Add a learnable bias vector
+        )
+        
+        # Defines a learnable parameter that holds the positional embeddings for the vision tokens.
+        # Since Transformers do not inherently understand spatial order, these values are added to tell the model where each patch is located.
+        self.position = nn.Parameter(
+            # Allocates a raw, unitialized memory block for a 3D tensor representing:
+            # (Batch size of 1, Total number of patches in the grid, Embedding dimension size).
+            torch.empty(1, config.patch_grid_size**2, config.hidden_size) # Positional embeddings, learns every patch's position
+        )
+        nn.init.normal_(self.position, std=0.02) # Initializes self.position with random numbers from a Normal Distribution with std=0.02
+        
+    def forward(self, images: torch.tensor) -> tuple[torch.Tensor, tuple[int, int]]:
+        expected = (self.config.in_channels, self.config.image_size, self.config.image_size)
+        # Validate that the input is a 4D tensor and matches the expected channel and spatial sizes
+        if images.ndim != 4 or tuple(images.shape[1:]) != expected:
+            raise ValueError(
+                f"images must have shape [batch, {expected[0]}, {expected[1], {expected[2]}}]"
+            )
+            
+        # Project images into visual patches using a convolutional layer
+        # Changes shape from: [Batch, Channels, Height, Width] -> [Batch, Hidden_Dim, Patch_H, Patch_W]
+        feature_map = self.proj(images)
+        
+        # Extract the new spatial dimensions (number of patches along height and width)
+        height, width = feature_map.shape[-2:]
+        
+        # Flatten and transpose the 2D feature map into a 1D sequence of tokens
+        # flatten(2):   [Batch, Hidden_Dim, Patch_H, Patch_W] -> [Batch, Hidden_Dim, Patch_H * Patch_W]
+        # transpose(1, 2): [Batch, Hidden_Dim, Sequence_Len]   -> [Batch, Sequence_Len, Hidden_Dim]
+        tokens = feature_map.flatten(2).transpose(1, 2)
+        
+        # Inject awarenedd by adding position embeddings and return alongside grid dimensions
+        return tokens + self.position, (height, width)
+    
+    def params(self) -> int:
+        """Returns total parameter count for RGBPatchEmbedding."""
+        conv_w = self.config.hidden_size * self.config.in_channels * (self.config.patch_size ** 2)
+        conv_b = self.config.hidden_size
+        pos_p = (self.config.patch_grid_size ** 2) * self.config.hidden_size
+        return conv_w + conv_b + pos_p
+    
+class VisionSelfAttension(nn.Module):
+    """Full bidirectional vision attention with per-head query and key RMSNorm."""
+    
+    def __init__(self, config: MiniVisionConfig):
+        super().__init__()
+        self.heads = config.heads
+        self.head_dim = config.hidden_size // config.heads
+        self.qkv = nn.Linear(config.hidden_size, config.hidden_size * 3, bias=True)
+        # Root Mean Square Normalization on Query and Key to fix the vanishing/exploding gradient problem
+        self.q_norm = RMSNorm(self.head_dim, eps=config.rms_norm_eps)
+        self.k_norm = RMSNorm(self.head_dim, eps=config.rms_norm_eps)
+        self.proj = nn.Linear(config.hidden_size, config.hidden_size, bias=True)
+        
+    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
+        batch, length, hidden_size = hidden_states.shape
+        q, k, v = self.qkv(hidden_states).chunk(3, dim=-1)
+        q = self.q_norm(q.view(batch, length, self.heads, self.head_dim)).transpose(1, 2) # [batch, self.heads, length, self.head_dim]
+        k = self.k_norm(k.view(batch, length, self.heads, self.head_dim)).tranpose(1, 2) # [batch, self.heads, length, self.head_dim]
+        v = v.view(batch, length, self.heads, self.head_dim).transpose(1, 2)
+        attn = F.scaled_dot_product_attention(q, k, v, is_causal=False) # Computes scaled dot attention of q, k, v tensors | is_causal=False deactivates autoregressive masking, deactivates torch.tril masking basically enabling the model to see bidirectionally
+        return self.proj(attn.transpose(1, 2).reshape(batch, length, hidden_size)) # Transpose back to [batch, length, self.heads, self.head_dim] after we did the broadcasting operation needed by dot_product_attention
+    
+    def params(self) -> int:
+        """Returns total parameter count for VisionSelfAttension."""
+        qkv_w = (self.config.hidden_size * 3) * self.config.hidden_size
+        qkv_b = self.config.hidden_size * 3
+        q_norm_p = self.head_dim
+        k_norm_p = self.head_dim
+        proj_w = self.config.hidden_size * self.config.hidden_size
+        proj_b = self.config.hidden_size
+        return qkv_w + qkv_b + q_norm_p + k_norm_p + proj_w + proj_b
+
+"""SwiGLU is an advanced neural network activation function combining Swish with Gated Linear Units (GLU), improving model performance and convergence speed (better than ReLU and GELU in modern LLMs)
+                  
+                  Input Vector (Dimension: d_model)
+                               │
+               ┌───────────────┴───────────────┐
+               ▼                               ▼
+       [ Gate Projection ]              [ Up Projection ]
+         (w_gate / w1)                    (w_up / w2)
+               │                               │
+         Hidden Dim (d_ff)               Hidden Dim (d_ff)
+               │                               │
+         [ Swish/SiLU ]                        │
+               │                               │
+               └───────────────►◄──────────────┘
+                                │ (Element-wise Multiplication)
+                                ▼
+                       [ Down Projection ]
+                         (w_down / w3)
+                               │
+                  Output Vector (Dimension: d_model)
+"""
+class VisionSwiGLU(nn.Module):
+    def __init__(self, config: MiniVisionConfig):
+        super().__init__()
+        self.gate_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=True) # Takes the incoming token vector and projects it into a much larger hidden space, acting as the filter in GLU (Gated Linear Unit)
+        self.up_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=True) # Takes the same input vector and projects it into the same hidden space, processing the raw content of the data, w/o any activation function applying to it directly
+        self.down_proj = nn.Linear(config.intermediate_size, config.hidden_size, bias=True) # Takes the combined, gated information and projects it back down to the model's standard size, compressing the processed information so it can be passed smoothly to the next Multi-Head Attention layer in the Transformer block
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x)) # Computes Hadamard product between the activated output from the Gate Projection and the Up Projection and reduces it down to the model's size at entry via down projection
+        
+    def params(self) -> int:
+        """Returns total parameter count for VisionSwiGLU."""
+        # W (gate) and V (value) project from hidden to intermediate
+        gate_w = self.config.hidden_size * self.config.intermediate_size
+        value_w = self.config.hidden_size * self.config.intermediate_size
+        # U (down) projects back from intermediate to hidden
+        down_w = self.config.intermediate_size * self.config.hidden_size
+        return gate_w + value_w + down_w
+
+class VisionTransformerBlock(nn.Module):
+    def __init__(self, config: MiniVisionConfig):
+        super().__init__()
+        self.norm1 = RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.attention = VisionSelfAttension()
+        self.norm2 = RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.mlp = VisionSwiGLU(config)
+        
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x + self.attention(self.norm1(x)) # Pre-Layer Normalization offering a higher stability at training in comparison to vanilla Post-Layer Normalization
+        return x + self.mlp(self.norm2(x))
+    
+    def params(self) -> int:
+        """Returns total parameter count for VisionTransformerBlock."""
+        norm1_p = self.config.hidden_size
+        norm2_p = self.config.hidden_size
+        return norm1_p + norm2_p + self.attention.params() + self.mlp.params()
+
+# Spatial downsampling for visual tokens -> takes a 1D sequence of vision tokens (which represents a 2D image grid), groups them into non-overlapping 2x2 patches, and merges each patch into a single output token.
+class SpatialMerger2x2(nn.Module):
+    """Learn one output token from each non-overlapping 2x2 patch neighborhood."""
+    
+    def __init__(self, vision_dim: int, output_dim: int, merge_size: int = 2):
+        super().__init__()
+        # This layer was built for 2x2 sizes
+        if merge_size != 2:
+            raise ValueError('this teaching layer merger intentionally implements 2x2 merging')
+        self.merge_size = merge_size
+        # Rearrangement plus a linear map is exactly a non-overlapping stride-2
+        self.downsample = nn.Linear(vision_dim * merge_size**2, output_dim, bias=True) # a 2x2 neighborhood contains 4 tokens, so input -> (vision_dim * merge_size ** 2) = (vision_dim * 4)
+    
+    def forward(self, x: torch.Tensor, grid_size: tuple[int, int]) -> torch.Tensor:
+        batch, token_count, hidden_size = x.shape # [Batch, Tokens, Hidden_size]
+        height, width = grid_size # grid_size -> [H, W]
+        if token_count != height * width or height % 2 or width % 2: # token_count must be able to form an even 2D matrix
+            raise ValueError("vision tokens must form an even 2D matrix")
+        feature_map = x.transpose(1, 2).reshape(
+            batch, hidden_size, height, width # input [Batch, Tokens, Hidden_size] | output [Batch, Hidden_size, Height, Width]
+        )
+        neighborhoods = feature_map.reshape(
+            batch, hidden_size, height // 2, 2, width // 2, 2 # reshape chops the height and width dims into blocks of 2, expanding the tensor into 6D shape | permute reorders the dims so that the tokens belonging to the exact same 2x2 local neighborhood are grouped together at the very end of the tensor
+        ).permute(0, 2, 4, 1, 3, 5)
+        neighborhoods = neighborhoods.reshape(batch, height // 2 * (width // 2), -1)
+        return self.downsample(neighborhoods)
+        
+
+class MultiModalProjector(nn.Module):
+    pass
+
+class MiniGLMVisionEncoder(nn.Module):
+    pass 
+
+class moddedVisionLanguageModel(nn.Module):
+    pass 
+
+class DirectPatchImageEncoder(nn.Module):
+    pass 
+
+class moddedDirectPatchVisionLanguageModel(nn.Module):
+    pass

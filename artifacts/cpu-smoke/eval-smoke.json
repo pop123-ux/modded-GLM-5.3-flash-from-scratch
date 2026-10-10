@@ -1,0 +1,54 @@
+{
+  "by_family": {
+    "increment": {
+      "solved": 0,
+      "tasks": 1,
+      "tests_passed": 0,
+      "tests_total": 3
+    }
+  },
+  "checkpoint": "../rl-smoke/checkpoint-0002",
+  "checkpoint_sha256": "733e4b2abc9cce77f6344c3b5f7346a44748c1be160731cc17a89b3d0ebae6a1",
+  "elapsed_seconds": 0.07,
+  "episodes": [
+    {
+      "evaluation": {
+        "message": "invalid syntax (<unknown>, line 3)",
+        "pass_fraction": 0.0,
+        "passed": false,
+        "status": "invalid",
+        "tests_passed": 0,
+        "tests_total": 3
+      },
+      "family": "increment",
+      "generated_completion": "::::::::",
+      "generated_tokens": 8,
+      "hit_token_cap": true,
+      "prompt": "# Complete this Python function.\n# Return x plus one.\ndef increment_axkyimagpvbf(x):",
+      "reference_completion": "\n    return x + 1\n",
+      "task_id": "dev-increment-000"
+    }
+  ],
+  "inference": {
+    "families": [
+      "increment"
+    ],
+    "greedy": true,
+    "max_new_tokens": 8,
+    "seed": 2026
+  },
+  "peak_vram_gib": null,
+  "schema_version": "1.0",
+  "split": "dev",
+  "status": "complete",
+  "summary": {
+    "pass_at_1": 0.0,
+    "tasks_solved": 0,
+    "tasks_total": 1,
+    "test_accuracy": 0.0,
+    "tests_passed": 0,
+    "tests_total": 3,
+    "token_cap_hits": 1,
+    "valid_programs": 0
+  }
+}

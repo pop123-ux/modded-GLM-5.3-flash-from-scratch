@@ -1,0 +1,283 @@
+{
+  "schema_version": "2.0",
+  "status": "complete",
+  "stage": "coding_pretraining",
+  "config": {
+    "vocab_size": 260,
+    "dim": 32,
+    "layers": 4,
+    "heads": 4,
+    "expert_hidden": 48,
+    "experts": 4,
+    "top_k": 2,
+    "streams": 4,
+    "sparse_window": 16,
+    "sparse_stride": 16,
+    "max_sequence_length": 512,
+    "trace_shapes": false,
+    "diagnostics": false,
+    "residual_alpha": 1.0,
+    "residual_dropout": 0.0,
+    "attention_mode": "hybrid",
+    "sparse_backend": "gather",
+    "sparse_every": 4,
+    "residual_mode": "streams",
+    "qk_norm": false,
+    "embedding_skip": false,
+    "logit_softcap": 0.0,
+    "padding_aware_routing": true,
+    "linear_chunk_size": 32,
+    "linear_checkpoint_chunks": true,
+    "ffn_mode": "moe",
+    "dense_hidden": 0,
+    "router_bias_rate": 0.001,
+    "router_bias_limit": 2.0,
+    "future_heads": 2
+  },
+  "parameter_counts": {
+    "total": 119748,
+    "active_per_token_estimate": 80836,
+    "training_only_parameters": 2048,
+    "inference_parameters": 117700
+  },
+  "implementation": "modded",
+  "arguments": {
+    "output": "../research-bundle-smoke",
+    "config": "../research-bundle-tiny.json",
+    "implementation": "modded",
+    "steps": 3,
+    "checkpoints": "",
+    "batch_size": 2,
+    "sequence_length": 320,
+    "learning_rate": 0.0003,
+    "muon_lr": 0.02,
+    "optimizer": "adamw",
+    "weight_decay": 0.1,
+    "balance_weight": 0.0,
+    "z_weight": 0.0,
+    "future_weight": 0.1,
+    "trim_padding": true,
+    "loss_scope": "full",
+    "schedule": "constant",
+    "warmup_steps": 0,
+    "seed": 42,
+    "data_seed": 42,
+    "families": "",
+    "dim": null,
+    "layers": null,
+    "eval_every": 3,
+    "eval_per_family": 1,
+    "target_loss": null,
+    "device": "cpu",
+    "amp": false,
+    "threads": 1
+  },
+  "seed": 42,
+  "steps": 3,
+  "batch_size": 2,
+  "sequence_length": 320,
+  "learning_rate": 0.0003,
+  "tokens_seen": 727,
+  "training_seconds": 0.1692955469993649,
+  "elapsed_seconds": 0.28478096399976494,
+  "device": "cpu",
+  "torch": "2.5.1+cpu",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "device_name": "x86_64",
+  "peak_vram_gib": null,
+  "validation_sha256": "e0b886f3c642ae4439354799aa4c6e2d666b34f80e61857d904ab5058a1d0eaf",
+  "source_sha256": {
+    "glm53_flash/__init__.py": "01cf71b5faef7e88fae77068456d5c0d487feea63febb2e4b4a08ca4089a730f",
+    "glm53_flash/baseline.py": "a43974d1d142d2d0a7993fe6f284e95ee855e8c99ef6284004c81e126949727c",
+    "glm53_flash/data.py": "ce9b604dce8a99e0ce6041aebd25c73b29a72d3603a81b83b1f4cfec606aee88",
+    "glm53_flash/evaluator.py": "adff70e1974c0c6b6812b19aa869ef31256ce1823d4d11a2bfe1bb4e1a00a20c",
+    "glm53_flash/linear.py": "c917b77aea041f09e94b1b292dac59c0a11f207927e53c3271d4644c9c685f5e",
+    "glm53_flash/model.py": "27e5587b74ab17c2072f4b34fb48b5de7e748414d6433b3101a98cd384ddb508",
+    "glm53_flash/objectives.py": "7fea66fcdd966d37bf3c1c514eb9f4f0d2a117b877e9c75fd294d482e5e4eecd",
+    "glm53_flash/optim.py": "27eb0279d45231147ad72674fd0e590d1f42a783078619988b98aa0abc339121",
+    "glm53_flash/runtime.py": "adfa952613b5eeff01febe9910a620eb01656fd7f8145878eb21a51a3b7e3ca7",
+    "glm53_flash/tasks.py": "65d4103b22242fdd1d8423972130933e6ccfb0e85b6132fb5fd0907e235efbd8",
+    "glm53_flash/tokenizer.py": "41acb322ebfc8d54c5dee17cd59d9d47af2ed5c34ccf0d4a88c6928c6ded1bae",
+    "glm53_flash/vision.py": "9b8d99a1f42ac8dc56de39d17ad8bc37d6d865c51bbef3f917b01e416c1a8c77",
+    "scripts/analyze_benchmarks.py": "7dbf35023ce4adc794dd991775a7dea11dd57a36b3709b50dba126442eb9b57a",
+    "scripts/analyze_results.py": "e4ae9085a4996009fa3fa24cc22c9400c14d19c28ea4e86f05ff9f82e140197a",
+    "scripts/analyze_rl_group_confirmation.py": "d8aa229158ab81f80a80164a59ea5bd85e00643f001c57e6d4abb1bac159daf9",
+    "scripts/analyze_rl_variants.py": "100af7bb95e2e7847873804e40b79bcd83de3da1dcd015f06bc54becc8d6b3a2",
+    "scripts/evaluate.py": "f14a56d15cb65e24a903a0a336d43a24212cf357ed2fc06b7dd687f00cfd72b0",
+    "scripts/evaluate_passk.py": "63536775f5bbcc0d3fcf403fb1a6352afbdca6adaaf0e6e15415c54f224e3c9c",
+    "scripts/generate.py": "6bdc32f45aa471d816a3bdf9b7f86b123b40599aae581ed4eea74b75f4da67a3",
+    "scripts/system_receipt.py": "02297656466b50c41260e531d03d1b16bbbfc85bda5477dbfb6f18087432b78d",
+    "scripts/train_pretrain.py": "8f40475031dfe9464fdf36b6ad03112689fa5860fdf26a1afec0a458afb155aa",
+    "scripts/train_rl.py": "381ade5ae0377708121a3ca12842cf9c588bb9703f999b27faac0b89eb6ada0a",
+    "scripts/train_vision.py": "f441d3959e7c145b69b37d69aacaf882d6166b677c5c35f078ea5cc569eaa986",
+    "scripts/validate_loss.py": "550f4296c5c8e3d60e260fcf1f2a4805149ac273afcc60427dc3dcb47a22ba5e",
+    "baselines/upstream/glm53_flash/__init__.py": "a383fc48ef3f47e36018ff6d9623960883a6606dca49e03230f4bf756dc85ef6",
+    "baselines/upstream/glm53_flash/evaluator.py": "4b2a6262d7f5a973c4e2e6db5646cfeab3ae7f207d04f5b65d990a6a25202674",
+    "baselines/upstream/glm53_flash/model.py": "897ea5aca999319cf4379cade6c4d5fc98ea1c99320021de1d894c21d9db662d",
+    "baselines/upstream/glm53_flash/runtime.py": "13a7ce595b276871732e6a776a17494a57ef4f1e0f304b94d6e9f12068a47992",
+    "baselines/upstream/glm53_flash/tasks.py": "e0962d03e5b2c21f3d75198804f1e8b5e85a5297f94066af2367fe7de750e313",
+    "baselines/upstream/glm53_flash/tokenizer.py": "bf5a48066a1bb40efb3dc9ebfe8427446428f1bbd733df9951abbaf28287f85c",
+    "baselines/upstream/glm53_flash/vision.py": "2065dc9f86da62a32f1c587fff30009f629f0b1c702095e732d8afc28e8725ba"
+  },
+  "input_positions_seen": 784,
+  "nonpad_input_positions_seen": 730,
+  "target_loss": null,
+  "first_target_hit": null,
+  "validation_curve": [
+    {
+      "step": 0,
+      "training_seconds": 0.0,
+      "val_loss": 5.545369936551662,
+      "completion_val_loss": 5.471070584100205,
+      "val_tokens": 1730,
+      "completion_val_tokens": 489
+    },
+    {
+      "step": 3,
+      "training_seconds": 0.1692955469993649,
+      "val_loss": 5.519277301413475,
+      "completion_val_loss": 5.447108450111436,
+      "val_tokens": 1730,
+      "completion_val_tokens": 489
+    }
+  ],
+  "checkpoints": [
+    {
+      "step": 0,
+      "path": "../research-bundle-smoke/checkpoint-0000",
+      "weights_sha256": "1b1760b9aec293a1969ed4236467be76590e2d235e4569ab03b77256fb1fb2a6"
+    },
+    {
+      "step": 3,
+      "path": "../research-bundle-smoke/checkpoint-0003",
+      "weights_sha256": "bf99177e8832d7e16b5124e9f23ff4f84ae956347ced8ae3a3a948de98c2e043"
+    }
+  ],
+  "training_curve": [
+    {
+      "step": 1,
+      "loss": 5.568171977996826,
+      "balance_loss": 1.0095869302749634,
+      "z_loss": 1.9098814725875854,
+      "future_loss": 5.560953140258789,
+      "gradient_norm": 0.9033482074737549,
+      "tokens": 262,
+      "seconds": 0.062151577999884466,
+      "training_seconds": 0.062151577999884466,
+      "lr_factor": 1.0,
+      "expert_usage": [
+        [
+          0.3250950574874878,
+          0.10076045989990234,
+          0.3041824996471405,
+          0.26996198296546936
+        ],
+        [
+          0.2471482902765274,
+          0.23384030163288116,
+          0.35741445422172546,
+          0.16159695386886597
+        ],
+        [
+          0.31178706884384155,
+          0.26425856351852417,
+          0.13117870688438416,
+          0.2927756607532501
+        ],
+        [
+          0.26615968346595764,
+          0.2471482902765274,
+          0.09125475585460663,
+          0.3954372704029083
+        ]
+      ],
+      "input_positions": 270,
+      "nonpad_input_positions": 263,
+      "effective_sequence_length": 135
+    },
+    {
+      "step": 2,
+      "loss": 5.5551910400390625,
+      "balance_loss": 1.0108968019485474,
+      "z_loss": 1.9132407903671265,
+      "future_loss": 5.561216354370117,
+      "gradient_norm": 1.030593752861023,
+      "tokens": 219,
+      "seconds": 0.05094316299982893,
+      "training_seconds": 0.1130947409997134,
+      "lr_factor": 1.0,
+      "expert_usage": [
+        [
+          0.36818182468414307,
+          0.11136363446712494,
+          0.3022727370262146,
+          0.2181818187236786
+        ],
+        [
+          0.25,
+          0.2545454502105713,
+          0.3545454442501068,
+          0.1409090906381607
+        ],
+        [
+          0.2818181812763214,
+          0.2954545319080353,
+          0.11590909212827682,
+          0.3068181872367859
+        ],
+        [
+          0.2545454502105713,
+          0.2750000059604645,
+          0.10000000149011612,
+          0.3704545497894287
+        ]
+      ],
+      "input_positions": 240,
+      "nonpad_input_positions": 220,
+      "effective_sequence_length": 120
+    },
+    {
+      "step": 3,
+      "loss": 5.532041549682617,
+      "balance_loss": 1.0127044916152954,
+      "z_loss": 1.919899582862854,
+      "future_loss": 5.561202049255371,
+      "gradient_norm": 0.9983570575714111,
+      "tokens": 246,
+      "seconds": 0.05620080599965149,
+      "training_seconds": 0.1692955469993649,
+      "lr_factor": 1.0,
+      "expert_usage": [
+        [
+          0.34008097648620605,
+          0.10526315867900848,
+          0.3198380470275879,
+          0.23481781780719757
+        ],
+        [
+          0.26923078298568726,
+          0.2510121464729309,
+          0.35222673416137695,
+          0.12753036618232727
+        ],
+        [
+          0.311740905046463,
+          0.2854250967502594,
+          0.13360324501991272,
+          0.26923078298568726
+        ],
+        [
+          0.2489878535270691,
+          0.26923078298568726,
+          0.07894736528396606,
+          0.4028339982032776
+        ]
+      ],
+      "input_positions": 274,
+      "nonpad_input_positions": 247,
+      "effective_sequence_length": 137
+    }
+  ],
+  "timing_policy": "Synchronized training includes data construction, forward, backward, optimizer; excludes validation, logs and saves. No untimed optimization steps."
+}

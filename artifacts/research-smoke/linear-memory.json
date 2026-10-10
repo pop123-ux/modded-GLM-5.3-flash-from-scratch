@@ -1,0 +1,22 @@
+{
+  "reference": {
+    "saved_tensor_elements": 29184,
+    "unique_saved_storage_bytes": 108544,
+    "finite_gradients": true
+  },
+  "chunked": {
+    "saved_tensor_elements": 7296,
+    "unique_saved_storage_bytes": 29184,
+    "finite_gradients": true
+  },
+  "settings": {
+    "output": "../linear-memory-smoke.json",
+    "length": 128,
+    "heads": 2,
+    "head_dim": 8,
+    "chunk_size": 16,
+    "device": "cpu"
+  },
+  "torch": "2.5.1+cpu",
+  "note": "Storage referenced by saved tensors during this isolated forward. Includes inputs; deduplicates shared storage. This is not full-model or peak allocator memory and says nothing about speed/convergence."
+}
