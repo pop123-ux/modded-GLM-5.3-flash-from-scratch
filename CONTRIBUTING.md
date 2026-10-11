@@ -25,3 +25,9 @@ Use dev data for tuning. Evaluate final chosen configurations on confirm without
 Prefer readable changes with a clear rationale. Add meaningful correctness tests when changing mathematics, routing, labels, checkpoints or data flow. Preserve attribution and the pinned upstream baseline. Put speculative ideas in `research/IDEAS.md` and measured findings in records with their commands.
 
 MIT contributions are welcome. See BENCHMARK_RULES.md and research/EXTENSIONS.md for the current protocol and options.
+
+## Propose a research idea
+
+Open a research-idea issue before implementing a substantial change. Describe the hypothesis, expected mechanism, comparison baseline and a result that would disprove it. Identify changed parameter/compute budgets and the minimum runnable experiment. A plausible idea can be useful even when it fails to improve training.
+
+Use optional configuration flags for architectural experiments, preserve the existing defaults, and document an independent ablation before proposing a bundle. Include a CPU correctness check, then measure on named hardware. Put educational explanations in the theory index and experimental evidence in receipts. Credit Pop Alexandru's original notebook notes and attribute new contributions to their authors.

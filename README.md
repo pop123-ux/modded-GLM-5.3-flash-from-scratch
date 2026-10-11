@@ -1,12 +1,31 @@
-# Modded-GLM From Scratch
+# Modded-GLM Flash From Scratch
 
 **A small hybrid-attention Mixture-of-Experts model to learn from, experiment with, and speedrun.**
+
+[Read the theory](theory/README.md) · [Run in Colab](COLAB.md) · [Explore experiments](research/EXTENSIONS.md) · [Contribute an idea](CONTRIBUTING.md)
+
 
 I'm **Pop Alexandru**, a teenage aspiring AI researcher with a passion for LLMs: understanding how they work, building them from scratch, and exploring what makes them learn more efficiently. This repository is my way of turning that curiosity into something other people can run, study, and improve.
 
 Built on [Vuk Rosić's GLM-5.3-Flash from Scratch](https://github.com/vukrosic/glm-5.3-flash-from-scratch), this project takes inspiration from the open experimentation and training-speedrun culture of [modded-nanogpt](https://github.com/kellerjordan/modded-nanogpt).
 
 **Status:** CPU-verified with 76 passing tests and three-step tiny-model smoke runs across 22 experiment conditions, plus a combined-feature smoke run. GPU benchmarking and longer convergence studies are open work.
+
+## Choose your starting point
+
+| Your goal | Start here |
+| --- | --- |
+| Understand the architecture without training | [My educational theory notebooks](theory/README.md) |
+| Check the project on your own computer | [The first CPU run](#your-first-run) |
+| Train and plot experiments on a GPU | [Google Colab notebook and guide](COLAB.md) |
+| Test an architectural hypothesis | [Experiment menu](experiments/README.md) and [research extensions](research/EXTENSIONS.md) |
+| Propose a new research direction | [Ranked ideas](research/IDEAS.md) and [contribution guide](CONTRIBUTING.md) |
+
+## Theory notebooks — written by Pop Alexandru
+
+I wrote the notebooks in [`theory/`](theory/README.md) for educational purposes, sharing the explanations and examples I use to understand LLMs. They are open for readers to study, learn from, and suggest improvements to under the project's MIT license.
+
+**[Browse the lessons without running any code](theory/README.md).** Each available lesson has a GitHub-readable page and its original Jupyter notebook. The index clearly marks topics that are still planned placeholders.
 
 ## Why another from-scratch LLM repository?
 
@@ -62,6 +81,8 @@ Install `requirements-dev.txt` for optional plots. Render completed run receipts
 
 [Open the experiment notebook](https://colab.research.google.com/github/pop123-ux/modded-GLM-5.3-flash-from-scratch/blob/main/colab/modded_glm_experiments.ipynb) once the repository is public. While private, download/upload the notebook and use its ZIP-source option.
 
+For ZIP upload, use **`modded-glm-flash-from-scratch.zip`**.
+
 [COLAB.md](COLAB.md) walks through the isolated Python/CUDA setup, GPU smoke check, baseline pilot, six-arm screen, paired confirmation, plotting and backups. [README_VISUALS.md](README_VISUALS.md) contains a visual plan and five image-generation prompts.
 
 ## Your first run
@@ -114,7 +135,7 @@ The repository also includes executable-reward RLOO, greedy/pass@k evaluation, a
 
 - [TUTORIAL.md](TUTORIAL.md): a practical first experiment.
 - [DOCUMENTATION.md](DOCUMENTATION.md): architecture, implementation and measurement details.
-- `theory/`: educational notebooks and annotated source notes; some notebooks are explicitly marked unfinished placeholders.
+- [Theory notebooks](theory/README.md): original educational notes by Pop Alexandru, readable lesson exports, and clearly marked planned topics.
 - `glm53_flash/`: model, tokenizer, data, optimizers, runtime, verifier and vision.
 - `scripts/`, `experiments/`, `tests/`: training workflows, experiments and correctness checks.
 - `artifacts/`: actual CPU smoke receipts and verification evidence; no trained weights.

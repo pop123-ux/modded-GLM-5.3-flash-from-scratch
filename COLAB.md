@@ -11,7 +11,7 @@ Do not choose Run all blindly: the campaign and confirmation cells perform subst
 
 
 ## 1. Load the source
-Upload `modded-glm-repaired.zip` (the updated archive containing this notebook and the plotter). For a public checkout, set SOURCE='github'. Set REF to a commit SHA to repeat an exact revision; `main` selects the latest version at clone time.
+Upload `modded-glm-flash-from-scratch.zip` (the updated archive containing this notebook and the plotter). For a public checkout, set SOURCE='github'. Set REF to a commit SHA to repeat an exact revision; `main` selects the latest version at clone time.
 
 
 ```python
