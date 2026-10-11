@@ -2,7 +2,7 @@
 
 **A small hybrid-attention Mixture-of-Experts model to learn from, experiment with, and speedrun.**
 
-[Read the theory](theory/README.md) · [Run in Colab](COLAB.md) · [Explore experiments](research/EXTENSIONS.md) · [Contribute an idea](CONTRIBUTING.md)
+[Read the theory](theory/README.md) · [VS Code / Jupyter](IDE_GUIDE.md) · [Run in Colab](COLAB.md) · [Explore experiments](research/EXTENSIONS.md) · [Contribute an idea](CONTRIBUTING.md)
 
 
 I'm **Pop Alexandru**, a teenage aspiring AI researcher with a passion for LLMs: understanding how they work, building them from scratch, and exploring what makes them learn more efficiently. This repository is my way of turning that curiosity into something other people can run, study, and improve.
@@ -53,6 +53,12 @@ When sharing an experiment or opening a pull request, include:
 - Run receipts, memory measurements where available, and unsuccessful runs too.
 
 Use multiple paired seeds before calling a change an improvement. Kernel speed alone does not establish faster learning. See [BENCHMARK_RULES.md](BENCHMARK_RULES.md) for the comparison protocol and [experiments/README.md](experiments/README.md) for the experiment menu.
+
+## Use your preferred environment
+
+Read theory notebooks without cloning or running code. For experiments, use the cloned repository in Colab or a local checkout in VS Code/Jupyter. Opening a notebook from GitHub does not clone its source into Colab. The ZIP upload option is a separate fallback.
+
+[IDE_GUIDE.md](IDE_GUIDE.md) explains interpreter/kernel selection and setup. [The local quickstart notebook](notebooks/local_quickstart.ipynb) runs a tiny CPU experiment without Colab-specific paths or imports.
 
 ## Setup
 

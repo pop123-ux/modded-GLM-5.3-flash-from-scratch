@@ -1,0 +1,4 @@
+# Install alongside requirements-dev.txt in the project's Python environment.
+jupyterlab>=4,<5
+notebook>=7,<8
+ipykernel>=6,<8

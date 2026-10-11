@@ -1,6 +1,6 @@
 # Google Colab experiment guide
 
-Upload `colab/modded_glm_experiments.ipynb` through Colab → File → Upload notebook. Follow its cells in order. The same cells appear below for copying into a new notebook.
+Open the experiment notebook in Colab. Choose the cloned-repo source option after publication, or the separate archive upload fallback while private. For local execution see [IDE_GUIDE.md](IDE_GUIDE.md).
 
 # Modded-GLM: Colab experiments and honest figures
 Run cells in order. Choose **Runtime → Change runtime type → GPU**, then connect. An NVIDIA T4 is suitable for initial small FP32 checks; resource availability varies. This notebook uses isolated Python 3.12 / PyTorch 2.5.1 rather than modifying Colab's notebook interpreter. No dataset download is needed: examples are generated locally.
@@ -9,9 +9,14 @@ Default source is ZIP upload while the repository is private. After publication,
 
 Do not choose Run all blindly: the campaign and confirmation cells perform substantial work. Training checkpoints are saved, but the trainer does **not** resume optimizer training from them. Completed independent runs can be skipped; interrupted individual runs must restart under a new directory.
 
+The experiment notebook needs the repository source in the runtime. Opening it from GitHub does not automatically clone the repo. Choose the cloned-repo path below after publication, or the separate upload fallback while private. Theory notebooks are primarily for reading; their vision snippets are illustrative, not standalone execution cells. For VS Code/Jupyter use IDE_GUIDE.md and notebooks/local_quickstart.ipynb.
 
-## 1. Load the source
-Upload `modded-glm-flash-from-scratch.zip` (the updated archive containing this notebook and the plotter). For a public checkout, set SOURCE='github'. Set REF to a commit SHA to repeat an exact revision; `main` selects the latest version at clone time.
+
+## 1. Choose the project source
+
+**Cloned repo:** after publication, set `SOURCE = 'github'`. This cell clones the repo into the Colab runtime, checks out REF, and sets ROOT to the cloned repo. All subsequent experiment commands use that checkout. Set REF to a commit SHA for an exact revision; `main` chooses the current branch head.
+
+**Upload fallback:** while private, keep `SOURCE = 'upload'` and upload `modded-glm-flash-from-scratch.zip`. This creates an extracted project rather than a cloned repo. You do not upload a ZIP when using the clone option.
 
 
 ```python
@@ -41,6 +46,7 @@ else:
 assert (ROOT/'scripts/plot_benchmarks.py').exists(), 'Use the updated archive/commit with the Colab kit.'
 os.chdir(ROOT)
 print('Working directory:',ROOT)
+
 ```
 
 ## 2. Install the isolated environment
@@ -61,6 +67,7 @@ subprocess.run([PY,'-m','pip','install','-r','requirements-dev.txt'],cwd=ROOT,ch
 subprocess.run([PY,'-m','pip','freeze'],stdout=(ROOT/'colab-environment.txt').open('w'),check=True)
 subprocess.run([PY,'-c',"import sys,torch; print(sys.version); print(torch.__version__,torch.version.cuda); assert torch.cuda.is_available(), 'No usable CUDA GPU: change runtime to GPU'; print(torch.cuda.get_device_name(0)); print('BF16 supported:',torch.cuda.is_bf16_supported())"],check=True)
 subprocess.run(['nvidia-smi'],check=True)
+
 ```
 
 ## 3. Correctness first; optional persistent backup
@@ -89,6 +96,7 @@ def run_script(script,*arguments):
                        env=dict(os.environ,OMP_NUM_THREADS='1'))
     finally:
         backup()
+
 ```
 
 ## 4. GPU smoke check, then a baseline pilot
@@ -109,6 +117,7 @@ print('Pilot final dev CE:',r['validation_curve'][-1]['val_loss'])
 print('Peak allocated GiB:',r['peak_vram_gib'])
 print('Pilot timed seconds:',r['training_seconds'])
 print('Rough 6-arm × 400-step training-only budget:',r['training_seconds']*24,'seconds; evaluation/setup/backup add time')
+
 ```
 
 ## 5. A matched six-arm screen
@@ -158,6 +167,7 @@ def campaign(output,arms,seeds,steps,batch,target=None):
     return output
 
 campaign(CAMPAIGN,SELECTED_ARMS,SEEDS,STEPS,BATCH,TARGET)
+
 ```
 
 ## 6. Plot measured data
@@ -175,6 +185,7 @@ from IPython.display import display,Image
 for name in ['validation-vs-step','validation-vs-time','final-validation','throughput','peak-memory','expert-load','time-to-target']:
     path=PLOTS/'group-0'/f'{name}.png'
     if path.exists():display(Image(filename=str(path)))
+
 ```
 
 ## 7. Confirmation plan (edit before running)
@@ -189,6 +200,7 @@ CONFIRM_RUNS = ROOT/'runs'/f'paired-{SESSION}'
 # Uncomment only after choosing and freezing the experiment:
 # campaign(CONFIRM_RUNS,['hybrid',WINNER],[42,43,44],1200,BATCH,TARGET)
 # run_script('scripts/plot_benchmarks.py',CONFIRM_RUNS,'--output',CONFIRM_RUNS/'figures')
+
 ```
 
 ## 8. Frozen evaluation and executable checks
@@ -203,6 +215,7 @@ FINAL_RESULTS = CHECKPOINT.parent/'selected-confirm'
 #            '--split','confirm','--per-family',8,'--batch-size',BATCH,'--sequence-length',320,'--device','cuda')
 # run_script('scripts/evaluate.py','--checkpoint',CHECKPOINT,'--output',str(FINAL_RESULTS)+'-code.json',
 #            '--split','confirm','--per-family',8,'--max-new-tokens',192,'--device','cuda')
+
 ```
 
 ## 9. Download and publish selectively
@@ -214,6 +227,7 @@ backup()
 archive=shutil.make_archive('/content/modded-glm-colab-results','zip',ROOT,'runs')
 from google.colab import files
 files.download(archive)
+
 ```
 
 ## Troubleshooting

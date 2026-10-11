@@ -37,3 +37,7 @@ The following files are placeholders in Pop Alexandru's notebook series, not com
 Start with RMSNorm and SwiGLU, then MoE; explore task obfuscation and the optional vision path afterward. Read the parameter-count example as an arithmetic exercise. The complete model implementation and its current limitations are described in [DOCUMENTATION.md](../DOCUMENTATION.md).
 
 Found an unclear explanation or a mathematical error? Open an issue identifying the notebook and cell, explain the correction, and include a small example where helpful. New lessons and diagrams are welcome through [CONTRIBUTING.md](../CONTRIBUTING.md). Preserve the author attribution and distinguish original notes from later contributions.
+
+## Reading versus execution
+
+These notebooks do not require a cloned repository for reading. Most contain only explanatory Markdown; the vision notebook includes contextual code snippets, not a standalone runnable program. For actual training use the experiment notebooks with the repository source available. See [VS Code/Jupyter setup](../IDE_GUIDE.md) or [Colab setup](../COLAB.md).
