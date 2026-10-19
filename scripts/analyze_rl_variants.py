@@ -89,7 +89,7 @@ def main() -> int:
     lines = [
         "# RL Variant Screening",
         "",
-        "Primary metric: greedy pass@1 on 20 fixed dev tasks across five families. All RL arms used 128 training rollouts from the same pretrained checkpoint.",
+        f"Primary metric: greedy pass@1 on {pretrained['summary']['tasks_total']} fixed dev tasks. Training rollout counts are reported for every arm below.",
         "",
         f"Pretrained checkpoint: **{pretrained['summary']['tasks_solved']}/{pretrained['summary']['tasks_total']}** tasks solved.",
         "",

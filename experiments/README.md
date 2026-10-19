@@ -59,3 +59,7 @@ python experiments/analyze_structural.py runs/diversity/results.json runs/curric
 ```
 
 The old analyzer filenames remain as entry points to this CLI. Original hardcoded upstream reports remain only in the exact baseline tree.
+
+## Unified notebook and plotting
+
+Use [the main experiment Colab](../colab/modded_glm_experiments.ipynb) for all 22 model arms and optional attention/storage, curriculum/diversity, RL variants/group-size confirmation, executable evaluation and vision studies. All are configured in one workspace. The notebook exposes an editable model class and a persistent Python session. [INFERENCE.md](../INFERENCE.md) and [plot troubleshooting](../docs/TROUBLESHOOTING.md) describe inference and result rendering.

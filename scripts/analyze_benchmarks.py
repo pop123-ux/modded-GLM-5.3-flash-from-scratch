@@ -3,7 +3,9 @@
 import argparse
 import json
 import statistics
+import sys
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 
 def compatibility_key(r):
  a=r['arguments']
@@ -12,7 +14,9 @@ def compatibility_key(r):
 
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('root',type=Path);p.add_argument('--output',type=Path,required=True)
- a=p.parse_args();paths=sorted(a.root.rglob('training-receipt.json'))
+ a=p.parse_args()
+ from scripts.plot_receipts import collect_receipts
+ valid,skipped=collect_receipts(a.root);paths=[p for p,r in valid]
  if not paths:p.error('no completed receipts')
  rows=[];groups={}
  for path in paths:

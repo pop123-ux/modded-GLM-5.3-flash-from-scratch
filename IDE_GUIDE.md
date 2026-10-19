@@ -74,3 +74,7 @@ Choose **Modded GLM (.venv)** for notebook execution. Open `notebooks/local_quic
 Use [COLAB.md](COLAB.md) for GPU campaigns and plots, [research/EXTENSIONS.md](research/EXTENSIONS.md) for controlled comparisons, and [CONTRIBUTING.md](CONTRIBUTING.md) for proposing new ideas. Keep outputs under `runs/`; use fresh output names and retain receipts. Local and Colab timing should only be compared with matched hardware/software settings.
 
 References: [VS Code notebooks](https://code.visualstudio.com/docs/datascience/jupyter-notebooks), [IPython kernel setup](https://ipython.readthedocs.io/en/stable/install/kernel_install.html), [JupyterLab installation](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html).
+
+## Custom model API and plots
+
+Use `from glm53_flash import ModdedModel, ModelConfig, generate_text` directly in your selected project kernel. The `%%glm` bridge is only needed by Colab’s separate-interpreter workflow; do not add it to ordinary local Python code. [INFERENCE.md](INFERENCE.md) provides checkpoint and sampling examples. `scripts/plot_loss.py` handles single-run loss logs, `scripts/plot_benchmarks.py` handles coding ablations, and `scripts/plot_studies.py` handles auxiliary studies. The main Colab is the unified research workspace; local CLI tools provide the same entry points.

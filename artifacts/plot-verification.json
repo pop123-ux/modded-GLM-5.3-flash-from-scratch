@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-19",
+  "device": "cpu",
+  "coding_receipts_rendered": 22,
+  "auxiliary_figures_rendered": 8,
+  "source_notes": "Historical receipts, rerendered with current scripts. No new training or GPU performance evidence.",
+  "main_notebook_cells": 36,
+  "notebook_custom_class": "Executed persistent objects, next-byte backward/update and cleanup on CPU",
+  "reported_colab_failure": "Underlying child traceback not supplied; exact cause unconfirmed"
+}

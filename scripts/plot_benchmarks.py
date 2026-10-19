@@ -14,6 +14,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.analyze_benchmarks import compatibility_key
+from scripts.plot_receipts import collect_receipts
 
 COLORS = ['#2563eb', '#0d9488', '#7c3aed', '#ea580c', '#dc2626', '#0891b2', '#64748b']
 ARM_COLORS = dict(hybrid='#2563eb', real_tokens='#0d9488', chunked_linear='#7c3aed',
@@ -24,23 +25,21 @@ def main():
     parser.add_argument('root', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    paths = sorted(args.root.rglob('training-receipt.json'))
-    if not paths:
-        parser.error('No completed training receipts found')
     if args.output.exists():
-        raise FileExistsError(args.output)
+        raise FileExistsError(f'{args.output} already exists; choose a fresh output directory')
+    runs, skipped = collect_receipts(args.root)
+    for item in skipped:
+        print(f"Skipped {item['path']}: {item['reason']}", file=sys.stderr)
+    if not runs:
+        parser.error('No complete coding-pretraining receipts found. Check CAMPAIGN, training completion, and train.jsonl; use plot_loss.py for unfinished runs.')
     groups = {}
-    for path in paths:
-        receipt = json.loads(path.read_text(encoding='utf-8'))
-        if receipt.get('status') != 'complete':
-            continue
+    for path, receipt in runs:
         groups.setdefault(compatibility_key(receipt), []).append((path, receipt))
-    if not groups:
-        parser.error('No complete receipts found')
     args.output.mkdir(parents=True)
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10,
                          'axes.spines.top': False, 'axes.spines.right': False,
                          'axes.grid': True, 'grid.alpha': .15, 'svg.fonttype': 'none'})
+    (args.output/'skipped-receipts.json').write_text(json.dumps(skipped, indent=2)+'\n', encoding='utf-8')
     rows, metadata = [], []
     for index, (key, runs) in enumerate(groups.items()):
         dest = args.output / f'group-{index}'

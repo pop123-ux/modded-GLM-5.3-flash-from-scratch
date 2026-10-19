@@ -38,3 +38,6 @@ __all__ = [
 ]
 
 from .model import ModdedGLM53FlashFromScratch
+from .inference import generate_text, GenerationResult
+from .lab import ModdedModel
+__all__ += ['ModdedGLM53FlashFromScratch','ModdedModel','generate_text','GenerationResult']

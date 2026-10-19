@@ -10,3 +10,5 @@ These are actual small CPU execution receipts from preparing this release. Read 
 - `SOURCE_MANIFEST.json`: SHA-256 of final source/config/doc/notebook files; excludes itself, caches and generated receipts.
 
 No trained weights are included. Results have not been promoted into a speedrun leaderboard. The exact upstream baseline tree contains its original reference report; those historical claims are not new measurements of this project.
+
+- `PREVIOUS_REPORT_v0.3.md`: verification history before the v0.4 inference/notebook/plotting expansion. The existing training receipts are historical functional runs; rendering them again does not constitute a new training experiment.

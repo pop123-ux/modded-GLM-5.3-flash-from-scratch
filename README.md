@@ -9,7 +9,7 @@ I'm **Pop Alexandru**, a teenage aspiring AI researcher with a passion for LLMs:
 
 Built on [Vuk Rosić's GLM-5.3-Flash from Scratch](https://github.com/vukrosic/glm-5.3-flash-from-scratch), this project takes inspiration from the open experimentation and training-speedrun culture of [modded-nanogpt](https://github.com/kellerjordan/modded-nanogpt).
 
-**Status:** CPU-verified with 76 passing tests and three-step tiny-model smoke runs across 22 experiment conditions, plus a combined-feature smoke run. GPU benchmarking and longer convergence studies are open work.
+**Status:** CPU-verified with 88 passing tests and three-step tiny-model smoke runs across 22 experiment conditions, plus a combined-feature smoke run. GPU benchmarking and longer convergence studies are open work.
 
 ## Choose your starting point
 
@@ -83,6 +83,12 @@ python -m pip install -r requirements.txt
 
 Install `requirements-dev.txt` for optional plots. Render completed run receipts with `python scripts/plot_benchmarks.py runs/YOUR_CAMPAIGN --output runs/YOUR_CAMPAIGN/figures`.
 
+## One notebook for model experiments
+
+The main [Colab experiment notebook](colab/modded_glm_experiments.ipynb) is the single research workspace: **all 22 registered model ablations**, custom configuration, primary/auxiliary loss plots, comparison charts, inference, attention/storage profiles, structural data/curriculum studies, RLOO screens and paired group-size confirmation, and vision pilots. Auxiliary studies are selectable and keep their own measurements; you do not need a separate notebook for each experiment. The local quickstart remains a small IDE execution check.
+
+It also defines an editable `NotebookGLM` class backed by the full repository model. Use the persistent `%%glm` project session to instantiate, inspect, subclass or train objects with your own code. This keeps model execution in Python 3.12 even when Colab’s UI uses another version.
+
 ## Run in Google Colab
 
 [Open the experiment notebook](https://colab.research.google.com/github/pop123-ux/modded-GLM-5.3-flash-from-scratch/blob/main/colab/modded_glm_experiments.ipynb) once the repository is public. While private, download/upload the notebook and use its ZIP-source option.
@@ -102,6 +108,29 @@ python scripts/evaluate.py --checkpoint runs/quickstart/checkpoint-0010 --split 
 Ten tiny steps verify the workflow; they do not produce a capable coding model. Use `dev` while experimenting and reserve `final`/`confirm` for evaluating selected configurations.
 
 Context is measured in **bytes**, not words. Training defaults to 320 input positions; oversized examples raise an error rather than being silently truncated.
+
+## Inference
+
+Use a saved checkpoint after training:
+
+```bash
+python scripts/infer.py --checkpoint runs/quickstart/checkpoint-0010 --prompt "def increment(x):" --max-new-tokens 64 --device auto
+```
+
+Greedy, temperature/top-k/top-p sampling, UTF-8 prompt files, interactive prompts and JSON results are supported. [INFERENCE.md](INFERENCE.md) documents decoding and checkpoint limits, plus the `ModdedModel` Python API for custom instances. No trained weights are bundled.
+
+## Plot losses and compare experiments
+
+```bash
+# A single run, including partial training logs before a final receipt exists:
+python scripts/plot_loss.py runs/quickstart --output runs/quickstart/loss-figures
+# Completed, compatible coding-pretraining arms:
+python scripts/plot_benchmarks.py runs/ablations --output runs/ablations/figures
+# Distinct auxiliary study schemas (RL, vision, structural studies and profiles):
+python scripts/plot_studies.py runs/studies --output runs/studies/figures
+```
+
+Install `requirements-dev.txt` first. Plots export PNG/SVG and source metadata. Use a new output directory when rerunning. Validation-versus-step/time, final loss, throughput, available GPU memory and expert loads are separated from single-run auxiliary losses. The main Colab launches these plotters and shows every compatibility group. [Troubleshooting](docs/TROUBLESHOOTING.md) documents the reported Colab plotting failure and how to retry without retraining.
 
 ## Model configurations
 

@@ -1,6 +1,6 @@
-# Google Colab experiment guide
+# Google Colab: unified model experiment workspace
 
-Open the experiment notebook in Colab. Choose the cloned-repo source option after publication, or the separate archive upload fallback while private. For local execution see [IDE_GUIDE.md](IDE_GUIDE.md).
+Use the cloned repo after publication or ZIP upload while private. All 22 model conditions, auxiliary studies and editable class cells live in this notebook. See [IDE_GUIDE.md](IDE_GUIDE.md) and [troubleshooting](docs/TROUBLESHOOTING.md).
 
 # Modded-GLM: Colab experiments and honest figures
 Run cells in order. Choose **Runtime → Change runtime type → GPU**, then connect. An NVIDIA T4 is suitable for initial small FP32 checks; resource availability varies. This notebook uses isolated Python 3.12 / PyTorch 2.5.1 rather than modifying Colab's notebook interpreter. No dataset download is needed: examples are generated locally.
@@ -10,6 +10,8 @@ Default source is ZIP upload while the repository is private. After publication,
 Do not choose Run all blindly: the campaign and confirmation cells perform substantial work. Training checkpoints are saved, but the trainer does **not** resume optimizer training from them. Completed independent runs can be skipped; interrupted individual runs must restart under a new directory.
 
 The experiment notebook needs the repository source in the runtime. Opening it from GitHub does not automatically clone the repo. Choose the cloned-repo path below after publication, or the separate upload fallback while private. Theory notebooks are primarily for reading; their vision snippets are illustrative, not standalone execution cells. For VS Code/Jupyter use IDE_GUIDE.md and notebooks/local_quickstart.ipynb.
+
+**One experiment workspace:** all 22 registered model ablations plus optional auxiliary study families, checkpoint inference, loss/ablation figures and a persistent customizable model class are provided here. Auxiliary study switches prevent accidental long jobs; no separate research notebooks are needed.
 
 
 ## 1. Choose the project source
@@ -90,12 +92,106 @@ def backup():
             shutil.copytree(ROOT/'runs',BACKUP/'runs',dirs_exist_ok=True)
         shutil.copy2(ROOT/'colab-environment.txt',BACKUP/'colab-environment.txt')
 
-def run_script(script,*arguments):
+def run_script(script,*arguments,allowed_codes=(0,)):
+    command=[PY,script,*map(str,arguments)]
+    logs=ROOT/'runs'/'_command_logs';logs.mkdir(parents=True,exist_ok=True)
+    log=logs/(Path(script).stem+'-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d-%H%M%S-%f')+'.log')
     try:
-        subprocess.run([PY,script,*map(str,arguments)],cwd=ROOT,check=True,
-                       env=dict(os.environ,OMP_NUM_THREADS='1'))
+        with log.open('w',encoding='utf-8') as handle:
+            handle.write(json.dumps(command)+'\n');handle.flush()
+            process=subprocess.Popen(command,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,
+                                     text=True,encoding='utf-8',errors='replace',env=dict(os.environ,OMP_NUM_THREADS='1'))
+            try:
+                for line in process.stdout:
+                    print(line,end='',flush=True);handle.write(line);handle.flush()
+                status=process.wait()
+            except BaseException:
+                process.terminate();process.wait();raise
+        print('Full command log:',log)
+        if status not in allowed_codes:
+            print(log.read_text(encoding='utf-8')[-12000:])
+            raise subprocess.CalledProcessError(status,command,output=log.read_text(encoding='utf-8'))
+        return status
     finally:
-        backup()
+        try:backup()
+        except Exception as exc:print('Backup failed; local results remain available:',exc)
+
+```
+
+## Interactive model class and customization
+The training scripts use isolated Python 3.12. Colab's host kernel may instead use Python 3.13, which cannot import the pinned torch wheel. The following cell starts a persistent project Python session and registers **`%%glm`**. All `%%glm` cells share real Python objects across cells; ordinary cells continue to control files, campaigns and Drive. Do not expect a variable from one interpreter in the other. Rerunning session setup resets your interactive model objects; saved checkpoints remain on disk.
+
+The notebook defines a subclass of the repository's full model rather than duplicating the architecture. You can change ModelConfig fields, access layers and parameters, override forward, add your own heads, write your own optimizer loop, or save/load checkpoints. Randomly initialized models are not useful generators until trained. Config/architecture changes require new compatible weights.
+
+
+```python
+# Use a persistent Python 3.12 session over pipes, without changing Colab's UI kernel.
+import importlib.util
+from IPython.core.magic import register_cell_magic
+spec=importlib.util.spec_from_file_location('glm_bridge',ROOT/'glm53_flash/notebook_bridge.py')
+bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
+if 'glm_session' in globals():glm_session.close()
+glm_session=bridge.NotebookSession(PY,ROOT)
+@register_cell_magic
+def glm(line,cell):
+    return glm_session.execute(cell)
+print('Use %%glm at the beginning of model cells. Objects persist until session close/restart.')
+
+```
+
+```python
+%%glm
+import torch
+from dataclasses import replace
+from glm53_flash import ModdedModel,ModelConfig,ByteTokenizer
+class NotebookGLM(ModdedModel):
+    """Your editable model class. Override forward or add modules here."""
+    def __init__(self,config=None,**overrides):
+        super().__init__(config,**overrides)
+    def forward(self,input_ids,token_mask=None):
+        return super().forward(input_ids,token_mask=token_mask)
+
+DEVICE='cuda' if torch.cuda.is_available() else 'cpu'
+config=ModelConfig(dim=32,layers=4,heads=4,expert_hidden=48,experts=4,top_k=2,
+                   streams=4,residual_alpha=1.,residual_dropout=0.,max_sequence_length=512)
+model=NotebookGLM(config,padding_aware_routing=True).to(DEVICE)
+x=torch.tensor([ByteTokenizer().encode('def increment(x):',bos=True)],device=DEVICE)
+logits,usage=model(x)
+print(type(model).__name__,logits.shape,model.parameter_counts())
+
+```
+
+```python
+%%glm
+# A tiny next-byte optimizer example on one string, independent of timed campaigns.
+import torch.nn.functional as F
+tokens=torch.tensor([ByteTokenizer().encode('def increment(x):\n    return x + 1',bos=True,eos=True)],device=DEVICE)
+x,labels=tokens[:,:-1],tokens[:,1:]
+optimizer=torch.optim.AdamW(model.parameters(),lr=3e-4)
+model.train();optimizer.zero_grad()
+logits,usage=model(x)
+language_loss=F.cross_entropy(logits.float().flatten(0,1),labels.flatten())
+balance,z=model.router_losses()
+future=model.future_prediction_loss(labels) if model.config.future_heads else language_loss.new_zeros(())
+example_loss=language_loss+.01*balance+.001*z+.1*future
+example_loss.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),1.)
+optimizer.step();model.update_router_biases()
+print('One next-byte demonstration update:',float(language_loss.detach()))
+# This single example does not establish learning quality. The campaign below
+# uses generated training data, held-out validation and reproducible receipts.
+# Custom subclass source is not serialized by checkpoint helpers: version it.
+
+```
+
+Before timing campaigns, free demonstration weights and temporary tensors on the GPU. Use the class again later for trained-checkpoint inference. The class definition remains in the project Python session.
+
+
+```python
+%%glm
+import gc
+del model,optimizer,logits,usage,x,labels,tokens,language_loss,balance,z,future,example_loss
+gc.collect()
+if torch.cuda.is_available():torch.cuda.empty_cache()
 
 ```
 
@@ -116,12 +212,12 @@ r = json.loads((PILOT/'training-receipt.json').read_text())
 print('Pilot final dev CE:',r['validation_curve'][-1]['val_loss'])
 print('Peak allocated GiB:',r['peak_vram_gib'])
 print('Pilot timed seconds:',r['training_seconds'])
-print('Rough 6-arm × 400-step training-only budget:',r['training_seconds']*24,'seconds; evaluation/setup/backup add time')
+print('Rough 22-arm × 400-step training-only budget:',r['training_seconds']*88,'seconds; evaluation/setup/backup add time')
 
 ```
 
-## 5. A matched six-arm screen
-Compare hybrid against each of the five additions individually. Start with 400 steps and seed 42. This is exploratory, not evidence from three seeds. Keep batch size, data seed, context, primary loss scope, validation split and eval frequency fixed. If the pilot runs out of memory, reduce batch size for **all** arms and start a new campaign.
+## 5. All 22 model ablations in one campaign
+The default campaign covers every registered model ablation, including the pinned Vuk baseline, all attention/residual/optimizer controls and the five research extensions. Set SELECTED_ARMS to a subset for a shorter run; do not create another notebook. Start with 400 steps and seed 42. All 22 arms cost substantially more than the earlier six-arm screen; use the pilot receipt to estimate your session budget. This is exploratory, not evidence from three seeds. Keep batch size, data seed, context, primary loss scope, validation split and eval frequency fixed. If the pilot runs out of memory, reduce batch size for **all** arms and start a new campaign.
 
 The screen can use TARGET=None. After the pilot, you may set a reachable local dev-loss target, write down why you chose it, and freeze it before the paired runs. Do not copy NanoGPT's 3.28 threshold; this is a different task/tokenizer. Target hits are observed only at evaluation checkpoints and are not an official leaderboard target.
 
@@ -131,7 +227,7 @@ Each command backs up before the next run starts. Completed receipts are skipped
 ```python
 sys.path.insert(0,str(ROOT))
 from experiments.run_ablation_matrix import ARMS as ARM_DEFINITIONS
-SELECTED_ARMS = ['hybrid','real_tokens','chunked_linear','dense_ffn','bias_balanced','future_bytes']
+SELECTED_ARMS = list(ARM_DEFINITIONS)  # all 22; replace with a subset if needed
 SEEDS = [42]
 STEPS = 400
 BATCH = 4
@@ -149,6 +245,7 @@ def campaign(output,arms,seeds,steps,batch,target=None):
     else:
         spec.write_text(json.dumps(settings,indent=2)+'\n')
     for arm in arms:
+        if arm not in ARM_DEFINITIONS:raise ValueError(f'Unknown arm: {arm}')
         changes,extra=ARM_DEFINITIONS[arm]
         config=output/f'{arm}.json'
         config.write_text(json.dumps(dict(BASE,**changes),indent=2)+'\n')
@@ -177,14 +274,22 @@ The plotter separates incompatible settings into groups. Exact image dimensions,
 
 
 ```python
-PLOTS = CAMPAIGN/f'figures-{datetime.datetime.now(datetime.timezone.utc).strftime("%H%M%S")}'
+# Microseconds avoid collisions when rerunning plotting cells. Never delete trained runs.
+STAMP = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d-%H%M%S-%f')
+PLOTS = CAMPAIGN/f'figures-{STAMP}'
+print('Completed receipts:',len(list(CAMPAIGN.rglob('training-receipt.json'))))
 run_script('scripts/plot_benchmarks.py',CAMPAIGN,'--output',PLOTS)
-SUMMARY = CAMPAIGN/f'summary-{datetime.datetime.now(datetime.timezone.utc).strftime("%H%M%S")}.json'
-run_script('scripts/analyze_benchmarks.py',CAMPAIGN,'--output',SUMMARY)
+run_script('scripts/analyze_benchmarks.py',CAMPAIGN,'--output',CAMPAIGN/f'summary-{STAMP}.json')
 from IPython.display import display,Image
-for name in ['validation-vs-step','validation-vs-time','final-validation','throughput','peak-memory','expert-load','time-to-target']:
-    path=PLOTS/'group-0'/f'{name}.png'
-    if path.exists():display(Image(filename=str(path)))
+for group in sorted(PLOTS.glob('group-*')):
+    print('Compatibility group:',group.name)
+    for path in sorted(group.glob('*.png')):display(Image(filename=str(path)))
+# Primary training loss (also works on an unfinished run with train.jsonl):
+first = next((p for p in CAMPAIGN.glob('*-seed*/train.jsonl')),None)
+if first is not None:
+    SINGLE_PLOTS=CAMPAIGN/f'loss-{STAMP}'
+    run_script('scripts/plot_loss.py',first,'--output',SINGLE_PLOTS)
+    display(Image(filename=str(SINGLE_PLOTS/'loss.png')))
 
 ```
 
@@ -218,6 +323,134 @@ FINAL_RESULTS = CHECKPOINT.parent/'selected-confirm'
 
 ```
 
+## Checkpoint inference — CLI and an instantiated object
+Use a checkpoint selected on dev. These examples use the pilot's final checkpoint for workflow checking only. Generation is full-context autoregressive decoding, without a KV cache; it stops at EOS or the requested cap. It does not execute generated code. Greedy is temperature=0; positive temperature enables top-k/top-p sampling.
+
+
+```python
+INFER_CHECKPOINT=PILOT/'checkpoint-0100'
+run_script('scripts/infer.py','--checkpoint',INFER_CHECKPOINT,'--prompt','def increment(x):',
+           '--max-new-tokens',64,'--temperature',0,'--device','cuda','--json')
+# Transfer only a path to the persistent model kernel; model objects stay there.
+glm('', 'CHECKPOINT_PATH = '+repr(str(INFER_CHECKPOINT)))
+
+```
+
+```python
+%%glm
+trained=NotebookGLM.from_checkpoint(CHECKPOINT_PATH,device=DEVICE)
+result=trained.generate('def increment(x):',max_new_tokens=64,temperature=.7,top_k=40,top_p=.9,seed=42)
+print(result.text)
+print('EOS:',result.stopped_on_eos)
+# Continue customizing/inspecting `trained` here. Release before other GPU studies:
+del trained
+import gc;gc.collect()
+if torch.cuda.is_available():torch.cuda.empty_cache()
+
+```
+
+## Auxiliary studies — same notebook, separate measurements
+All repository study families are launchable below: attention time/memory, chunked saved-state storage, structural data diversity, curriculum order, RLOO, greedy/pass@k evaluation, miniature vision and the larger digit pilot. They use distinct tasks/receipts and are not merged into the coding-CE leaderboard. The structural studies currently support CPU/MPS rather than CUDA, so this notebook runs them on CPU. The vision comparison and larger pilot are separate model configurations.
+
+Set the switches to True to execute the desired studies; leave costly studies off during an ablation session. No extra experiment notebook is required. Defaults are functional budgets, not converged results. The larger digit pilot may return exit code 2 when its learning criterion is not met; this is preserved as an unsuccessful learning result, not a software success claim.
+
+
+```python
+RUN_STUDIES=dict(attention=False,linear_storage=False,diversity=False,curriculum=False,
+                 rl=False,code_evaluation=False,vision=False,large_vision_pilot=False)
+STUDY_STEPS=20
+STUDY_SEEDS=[42,43,44]
+STUDIES=ROOT/'runs'/f'studies-{SESSION}'
+STUDIES.mkdir(parents=True,exist_ok=True)
+if RUN_STUDIES['attention']:
+    run_script('experiments/profile_attention.py','--output',STUDIES/'attention.json',
+               '--lengths','64,128,256','--iterations',10,'--batch-size',2,'--device','cuda')
+if RUN_STUDIES['linear_storage']:
+    run_script('experiments/profile_linear_memory.py','--output',STUDIES/'linear-storage.json',
+               '--length',256,'--head-dim',16,'--chunk-size',32,'--device','cuda')
+if RUN_STUDIES['diversity']:
+    run_script('experiments/pretraining_data_diversity.py','--output',STUDIES/'diversity',
+               '--steps',STUDY_STEPS,'--batch-size',2,'--sequence-length',320,
+               '--seeds',','.join(map(str,STUDY_SEEDS)),'--device','cpu')
+if RUN_STUDIES['curriculum']:
+    run_script('experiments/pretraining_curriculum_order.py','--output',STUDIES/'curriculum',
+               '--steps',STUDY_STEPS,'--batch-size',2,'--sequence-length',320,
+               '--seeds',','.join(map(str,STUDY_SEEDS)),'--device','cpu')
+structural=[p for p in [STUDIES/'diversity/results.json',STUDIES/'curriculum/results.json'] if p.exists()]
+if structural:
+    run_script('experiments/analyze_structural.py',*structural,'--output',STUDIES/'structural-summary.json')
+if RUN_STUDIES['rl']:
+    run_script('scripts/train_rl.py','--initial-checkpoint',INFER_CHECKPOINT,'--output',STUDIES/'rl',
+               '--groups',8,'--checkpoints','8','--group-size',4,'--max-new-tokens',192,'--device','cuda')
+if RUN_STUDIES['code_evaluation']:
+    run_script('scripts/evaluate.py','--checkpoint',INFER_CHECKPOINT,'--split','dev',
+               '--output',STUDIES/'greedy.json','--per-family',4,'--max-new-tokens',192,'--device','cuda')
+    run_script('scripts/evaluate_passk.py','--checkpoint',INFER_CHECKPOINT,'--split','dev',
+               '--output',STUDIES/'passk.json','--per-family',4,'--samples',8,'--max-new-tokens',192,'--device','cuda')
+if RUN_STUDIES['vision']:
+    run_script('scripts/train_vision.py','--architecture','both','--output',STUDIES/'vision',
+               '--steps',STUDY_STEPS,'--batch-size',4,'--eval-examples',20,'--device','cuda')
+if RUN_STUDIES['large_vision_pilot']:
+    code=run_script('experiments/full_25m_vision_digit_pilot.py','--output',STUDIES/'large-vision',
+                    '--steps',STUDY_STEPS,'--batch-size',2,'--eval-examples',20,'--device','cuda',allowed_codes=(0,2))
+    print('Digit pilot exit code:',code)
+
+```
+
+## Optional RL variant screen and paired group-size confirmation
+These cells replace the old machine-specific shell launchers for Colab. All eight screening conditions have the same 128-rollout budget. Confirmation compares group sizes 8 and 4 across three training seeds. Enable these explicitly only after selecting a pretrained checkpoint on dev; confirmation opens the confirm split and must not be used for tuning. These are expensive optional experiments, not extra notebooks. The script-specific statistical reports require their expected directory layout, supplied below.
+
+
+```python
+RUN_RL_VARIANTS=False
+RUN_RL_GROUP_CONFIRMATION=False
+RL_FAMILIES='increment,double,square,even,reverse'
+RL_SEEDS=[31415,27182,16180]
+RL_SCREEN=STUDIES/'rl-screen'
+RL_CONFIRM=STUDIES/'rl-confirmation'
+
+def rl_train(dest,groups,size,seed,reward='binary',penalty=-.1,temperature=.35):
+    run_script('scripts/train_rl.py','--initial-checkpoint',INFER_CHECKPOINT,'--output',dest,
+               '--groups',groups,'--checkpoints',groups,'--group-size',size,'--max-new-tokens',192,
+               '--temperature',temperature,'--learning-rate',5e-5,'--train-scope','last-block-head',
+               '--reward-mode',reward,'--invalid-penalty',penalty,'--families',RL_FAMILIES,
+               '--tasks-per-family',8,'--seed',seed,'--device','cuda')
+    return dest/f'checkpoint-{groups:04d}'
+def rl_eval(checkpoint,output,split):
+    run_script('scripts/evaluate.py','--checkpoint',checkpoint,'--split',split,'--per-family',8,
+               '--max-new-tokens',192,'--families',RL_FAMILIES,'--seed',20260827,'--device','cuda','--output',output)
+if RUN_RL_VARIANTS:
+    rl_eval(INFER_CHECKPOINT,RL_SCREEN/'evaluations/pretrained-dev.json','dev')
+    variants=[('baseline',16,8,'binary',-.1,.35),('partial',16,8,'case-fraction',-.1,.35),
+              ('invalid-zero',16,8,'binary',0.,.35),('invalid-hard',16,8,'binary',-1.,.35),
+              ('temp-low',16,8,'binary',-.1,.2),('temp-high',16,8,'binary',-.1,.8),
+              ('group-4',32,4,'binary',-.1,.35),('group-16',8,16,'binary',-.1,.35)]
+    for name,groups,size,reward,penalty,temp in variants:
+        checkpoint=rl_train(RL_SCREEN/name,groups,size,31415,reward,penalty,temp)
+        rl_eval(checkpoint,RL_SCREEN/f'evaluations/{name}-dev.json','dev')
+    run_script('scripts/analyze_rl_variants.py','--screen-dir',RL_SCREEN,'--output',RL_SCREEN/'SCREENING-REPORT.md')
+if RUN_RL_GROUP_CONFIRMATION:
+    rl_eval(INFER_CHECKPOINT,RL_CONFIRM/'evaluations/pretrained-confirm.json','confirm')
+    for seed in RL_SEEDS:
+        for name,groups,size in [('baseline',16,8),('group-4',32,4)]:
+            checkpoint=rl_train(RL_CONFIRM/f'{name}-seed-{seed}',groups,size,seed)
+            rl_eval(checkpoint,RL_CONFIRM/f'evaluations/{name}-seed-{seed}-confirm.json','confirm')
+    run_script('scripts/analyze_rl_group_confirmation.py','--run-dir',RL_CONFIRM,'--output',RL_CONFIRM/'CONFIRMATION-REPORT.md')
+
+```
+
+## Plots for auxiliary studies
+The auxiliary plotter understands their separate receipt schemas. Run this after enabled studies finish; missing studies are listed as skipped. These charts are descriptive views, not directly comparable loss targets across tasks.
+
+
+```python
+if any(RUN_STUDIES.values()) or RUN_RL_VARIANTS or RUN_RL_GROUP_CONFIRMATION:
+    AUX_PLOTS=STUDIES/('figures-'+datetime.datetime.now(datetime.timezone.utc).strftime('%H%M%S-%f'))
+    run_script('scripts/plot_studies.py',STUDIES,'--output',AUX_PLOTS)
+    for path in sorted(AUX_PLOTS.glob('*.png')):display(Image(filename=str(path)))
+
+```
+
 ## 9. Download and publish selectively
 Download the full results bundle (includes weights; it can be large), or use the Drive backup. Put selected PNG/SVG figures into `assets/results/` and include commands, GPU, commit/source hashes, precision, seeds, context and target in their captions. Keep generated illustrations under `assets/illustrations/`. See `README_VISUALS.md` for image prompts and README placement. Never upload model weights to GitHub's ordinary source tree.
 
@@ -241,4 +474,8 @@ files.download(archive)
 - **No time-to-target plot:** supply a frozen numeric TARGET before training. Without a target, compare actual loss curves and elapsed training.
 
 Sources: [Colab FAQ](https://research.google.com/colaboratory/faq.html), [uv Python installation](https://docs.astral.sh/uv/guides/install-python/), [PyTorch previous versions](https://pytorch.org/get-started/previous-versions/).
+
+
+## Close the interactive project session
+After using your custom model objects, run `glm_session.close()` in an ordinary cell to release its memory. Interrupting a project cell stops the session; recreate it and its model objects to continue. `%%glm` accepts Python, not nested IPython magics; save figures to disk and display them from ordinary cells.
 

@@ -1,32 +1,22 @@
-# Verification report — v0.3.0 — 2026-10-10
+# Verification report — v0.4.0 — 2026-10-19
 
-The expanded project passes **76 tests** on CPU. All **22 ablation conditions** completed three-step tiny-model training runs with one model seed (42), fixed data seed, batch size 2 and 320-byte maximum context. All recorded losses and gradient norms are finite. These runs verify functionality; they do not establish convergence, coding ability or speedrun improvements.
+The project passes **88 CPU tests**. This release adds the shared inference API, customizable model facade and notebook session, single-run loss plots, auxiliary-study figures and diagnostics for the reported Colab plotting failure.
 
-## Current verification
+## Executed checks
 
-- Tests cover causal outputs, checkpoint round trips, pinned upstream equivalence, routing losses, rollout gradients, tokenizer/data behavior and the five research additions.
-- Chunked linear attention agrees with the prefix reference in outputs, input gradients and layer parameter gradients. Chunk sizes and checkpoint modes are covered. Boundary states own compact storage rather than retaining full chunk views.
-- Masked routing agrees with compact real-token routing; padded inputs receive no expert gradients. Right-padding cropping retains supervised targets and primary validation loss in the tested settings.
-- Dense control has the intended active expert matrix width and finite gradients.
-- Bias control changes only after the explicit training update, consumes usage once, and remains frozen in evaluation. Selection bias does not replace mixture-weight logits.
-- Future-byte objectives use tested offsets and ignore padding. Gradients reach the auxiliary heads and shared trunk. Training-only parameters are reported separately.
-- All five new arms and the hybrid control were rerun after the final attention-state fix. The four compatible MoE additions also completed a combined three-step run; checkpoint reload and independent frozen dev evaluation succeeded. Dense FFNs are a separate control.
-- Python compilation and shell syntax checks completed. Linux and Windows CI definitions include the test suite and two training smoke runs; the initial hosted Linux job passed all tests and both smoke runs. The initial Windows job passed 75 tests and failed one UTF-8 notebook-read test; its default-encoding assumption has been corrected. The follow-up hosted run passed on both Linux and Windows.
+- Full pytest suite: 88 passed. Covers the prior architecture/data/training checks plus EOS stopping, special-token masking, greedy and filtered sampling, sampling seed repeatability, preservation of training mode/global RNG, invalid contexts/options, model checkpoint round trips, prompt-file/JSON CLI inference, incomplete JSONL logs, mixed receipt schemas and persistent cross-cell model objects/error recovery.
+- All 22 existing tiny-model CPU receipts rendered with the current ablation plotter and were processed by the analyzer. These are historical three-step runs, not new training or GPU speedup measurements.
+- Auxiliary plotter rendered eight figures from existing attention, curriculum/diversity, RL, vision and executable-evaluation receipts. Separate task metrics remain separate.
+- Main notebook: all 36 code/Markdown cells are valid notebook JSON, with Python code cells parsed (the `%%glm` cell marker is stripped for Python parsing).
+- The actual notebook's editable model-class, cross-cell optimizer/gradient example and GPU-memory cleanup cells ran in a persistent Python 3.12 session on CPU. The session helper uses subprocess pipes, retains objects and surfaces exceptions; it does not require a TCP kernel or modify Colab's UI interpreter.
+- The CLI and plot integration tests are enabled in CI by installing the optional plotting dependencies. The earlier v0.3 hosted Linux/Windows run passed; hosted results for this revision are reported by GitHub Actions.
 
-## Isolated attention-storage measurement
+Environment: Linux x86_64, Python 3.12.14, PyTorch 2.5.1+cpu, NumPy 2.5.4, Matplotlib 3.11.2. CUDA, Colab, BF16, MPS and long convergence studies were not executed here. The main notebook includes launch paths for every registered ablation and auxiliary study, but this does not claim every long campaign has been run.
 
-For CPU float32 features shaped B=1, T=128, H=2, d=8, chunk size 16, saved-tensor hooks counted **108,544 bytes** of unique storage referenced by the prefix reference versus **29,184 bytes** by checkpointed chunks. Both backward passes had finite gradients. This includes inputs and deduplicates shared storage; it is **not peak allocator memory or full-model memory**, and does not measure speed. Reproduce with `experiments/profile_linear_memory.py`.
+## Reported plot failure
 
-## Evidence and limits
+The supplied 2026-10-19 Colab traceback contains `CalledProcessError` and exit code 1, without the child process's underlying exception. Its exact cause is unconfirmed. `docs/TROUBLESHOOTING.md` records the observed command and provides non-destructive source-update, diagnostic and plot-retry cells. The notebook now streams/logs stdout and stderr, uses unique output paths and lists skipped receipts. None of these changes requires retraining stored checkpoints.
 
-Current receipts and logs are in `artifacts/research-smoke/`; test output and XML are in `artifacts/`. No trained weights are packaged. The earlier release's broader smoke checks and report are preserved under `artifacts/cpu-smoke/` and `artifacts/PREVIOUS_REPORT_v0.2.md`; those are historical checks, not reruns of every CLI for v0.3.0.
+## Interpretation
 
-Environment: Linux x86_64, Python 3.12.14, PyTorch 2.5.1+cpu. CUDA, MPS, BF16, multi-GPU execution, longer multi-seed experiments remain unverified. A GPU leaderboard is intentionally empty. New features are disabled in the default model and have individual presets for controlled comparisons.
-
-The default model still has 12,625,740 stored parameters and an architectural active-per-token estimate of 7,907,148. Future heads add training-only parameters when enabled. Neither count is a hardware FLOP measurement.
-
-This is suitable for publication as an educational research project with these limits disclosed. Public speedrun records should follow BENCHMARK_RULES.md and CONTRIBUTING.md and include matched hardware, complete receipts, confirmation evaluation and multiple seeds.
-
-## Colab companion
-
-The Colab notebook code cells were parsed and its campaign helper was exercised locally on CPU. The receipt plotter rendered actual CPU receipts and synthetic fixtures for the optional GPU-memory/target branches; fixtures are not measurements and are not packaged as results. Colab setup and CUDA execution were not run here. Inference now enables BF16 only when CUDA reports BF16 support, retaining FP32 on GPUs without that support.
+No trained weights are packaged and no new speed record, quality gain or architecture novelty is claimed. Random model objects and short smoke checkpoints are API demonstrations. Inference recomputes full context rather than using a KV cache. Keep dev selection separate from confirmation, preserve failed runs, and follow BENCHMARK_RULES.md for matched comparisons. Earlier verification history is retained in artifacts/PREVIOUS_REPORT_v0.3.md and artifacts/PREVIOUS_REPORT_v0.2.md.

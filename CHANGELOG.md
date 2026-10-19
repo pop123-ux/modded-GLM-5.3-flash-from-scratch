@@ -1,5 +1,14 @@
 # 0.3.0 — Five optional research extensions
 
+## 0.4.0
+
+- Shared checkpoint inference CLI/API with greedy/top-k/top-p sampling, prompt files and interactive prompts; legacy generate entry point retained.
+- Subclassable ModdedModel and editable notebook class with persistent Python-session objects across cells.
+- One main Colab for all 22 model arms, auxiliary study families, inference and plots.
+- Single-run/partial-log loss figures, auxiliary-study charts and mixed-receipt handling.
+- Subprocess logs and documented recovery for the reported Colab plotting exit, whose underlying cause was not supplied.
+- 88 passing CPU tests; CUDA/Colab remain unverified here.
+
 - Real-token expert dispatch, masking-aware router losses and explicit right-padding crop.
 - Chunked/checkpointed causal linear attention with compact differentiable boundary states.
 - Dense SwiGLU controls sized by active expert projection width.
